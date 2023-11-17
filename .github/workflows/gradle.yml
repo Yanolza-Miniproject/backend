@@ -1,0 +1,72 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+# Repository의 Actions 탭에 나타날 Workflow 이름
+name: CI
+
+# Workflow를 실행시키기 위한 Event 목록
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+# 해당 Workflow Job 목록
+jobs:
+  build:
+    # Job 이름
+    name: Build and test project
+    # Runner가 실행될 환경 정의
+    runs-on: ubuntu-latest
+
+	# Job 내 step 목록
+    steps:
+      # check-out하여 Repository에 접근할 수 있는 Action
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # jdk를 다운받는 Action
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'oracle'
+
+	  # 실행 권한 부여 커맨드
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+	  # Gradle을 사용한 build를 돕는 Action
+	  - name: Build with Gradle
+      uses: gradle/gradle-build-action@v2.6.0
+      with:
+        arguments: build
+        # main과 develop 브랜치에 push나 pull request되는 경우에 한해 cache 저장
+        cache-read-only: ${{ github.ref != 'ref/heads/main' && github.ref != 'ref/heads/develop' }}
+
+	  # PR에 테스트 결과 코멘트 등록 Action
+      - name: Publish result of unit test
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: "**/build/test-results/test/TEST-*.xml"
+          # 별도로 secret 설정된 값이 아닌 기본값이라 그대로 명시
+          github_token: ${{ github.token }}
+
+	  # 테스트 실패 시 실패한 코드 라인에 Check 코멘트 등록 Action
+      - name: Publish failure of unit test
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+          # 마찬가지로 기본값 그대로 명시
+          github_token: ${{ github.token }}
