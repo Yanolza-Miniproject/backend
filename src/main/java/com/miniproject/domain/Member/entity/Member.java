@@ -1,8 +1,6 @@
 package com.miniproject.domain.Member.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,10 +22,14 @@ public class Member {
 
     private String phoneNumber;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Order> orders = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "basket_id")
     private Basket basket;
 
 
