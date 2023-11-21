@@ -1,6 +1,7 @@
 package com.miniproject.domain.Like.entity;
 
 import com.miniproject.domain.Accommodation.entity.Accommodation;
+import com.miniproject.domain.Member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

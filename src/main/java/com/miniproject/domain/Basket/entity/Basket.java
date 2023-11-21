@@ -1,5 +1,6 @@
 package com.miniproject.domain.Basket.entity;
 
+import com.miniproject.domain.Member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

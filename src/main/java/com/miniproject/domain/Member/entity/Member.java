@@ -1,12 +1,17 @@
 package com.miniproject.domain.Member.entity;
 
+import com.miniproject.domain.Basket.entity.Basket;
+import com.miniproject.domain.Like.entity.Like;
+import com.miniproject.domain.Order.entity.Order;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 import java.util.ArrayList;
 
 @Getter
 @EqualsAndHashCode(of = "id")
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
@@ -28,9 +33,6 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Order> orders = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "basket_id")
-    private Basket basket;
 
 
     @Builder
