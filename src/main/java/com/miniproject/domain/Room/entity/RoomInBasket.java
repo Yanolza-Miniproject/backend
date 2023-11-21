@@ -1,5 +1,7 @@
-package com.miniproject.domain.Basket.entity;
+package com.miniproject.domain.Room.entity;
 
+import com.miniproject.domain.Basket.entity.Basket;
+import com.miniproject.domain.Member.entity.Member;
 import com.miniproject.domain.Room.entity.Room;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

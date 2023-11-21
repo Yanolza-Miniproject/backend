@@ -1,4 +1,4 @@
-package com.miniproject.domain.Basket.entity;
+package com.miniproject.domain.Room.entity;
 
 import com.miniproject.domain.Room.entity.Room;
 import com.miniproject.domain.Room.entity.RoomImage;
