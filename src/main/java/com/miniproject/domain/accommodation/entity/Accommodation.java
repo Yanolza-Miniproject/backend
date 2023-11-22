@@ -19,7 +19,7 @@ public class Accommodation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
     @Column
