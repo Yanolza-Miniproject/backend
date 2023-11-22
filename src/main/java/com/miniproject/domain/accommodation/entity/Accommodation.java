@@ -51,7 +51,7 @@ public class Accommodation {
     @Column
     private LocalDateTime checkOut;
     @Column
-    private int likeCount;
+    private int wishCount;
     @Column
     private int viewCount;
 
