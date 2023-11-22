@@ -10,10 +10,12 @@ public enum ErrorCode {
     //숙소
 
     //객실
-    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다.");
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다."),
     //장바구니 상품
 
     //장바구니
+    BASKET_DUPLICATE_ACTIVATE(HttpStatus.NOT_ACCEPTABLE,"활성화 된 장바구니가 두 개 이상입니다.");
+
 
     //주문
 
