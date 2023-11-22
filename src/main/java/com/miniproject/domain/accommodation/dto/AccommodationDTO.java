@@ -24,7 +24,7 @@ public record AccommodationDTO(
         boolean categoryDiningArea,
         LocalDateTime checkIn,
         LocalDateTime checkOut,
-        int likeCount,
+        int wishCount,
         int viewCount,
         List<RoomDTO> rooms
 
@@ -52,7 +52,7 @@ public record AccommodationDTO(
                 .categoryDiningArea(entity.isCategoryDiningArea())
                 .checkIn(entity.getCheckIn())
                 .checkOut(entity.getCheckOut())
-                .likeCount(entity.getLikeCount())
+                .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
                 .build();
     }
