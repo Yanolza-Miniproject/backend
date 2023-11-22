@@ -12,12 +12,12 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Basket {
 
     private int totalPrice;
     private int totalCount;
-    private String status;
+    private BasketStatus basketStatus;
 
     @OneToMany(mappedBy = "basket")
     private List<RoomInBasket> rooms = new ArrayList<>();
@@ -33,4 +33,21 @@ public class Basket {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @Builder
+    public Basket(){
+        this.totalPrice = 0;
+        this.totalCount = 0;
+        this.basketStatus = BasketStatus.ACTIVATE;
+    }
+
+    public void ChangeStatus(BasketStatus basketStatus) {
+        this.basketStatus = basketStatus;
+    }
+
+    public void RegisterRoom(RoomInBasket roomInBasket) {
+        this.rooms.add(roomInBasket);
+        this.totalPrice += roomInBasket.getRoom().getPrice();
+        this.totalCount +=1;
+    }
 }
