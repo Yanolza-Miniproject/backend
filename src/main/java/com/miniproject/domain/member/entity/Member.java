@@ -1,7 +1,7 @@
 package com.miniproject.domain.member.entity;
 
-import com.miniproject.domain.like.entity.Like;
-import com.miniproject.domain.order.entity.Order;
+import com.miniproject.domain.wish.entity.Wish;
+import com.miniproject.domain.orders.entity.Orders;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.*;
@@ -27,10 +27,10 @@ public class Member {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Like> likes = new ArrayList<>();
+    List<Wish> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Order> orders = new ArrayList<>();
+    List<Orders> orders = new ArrayList<>();
 
 
 

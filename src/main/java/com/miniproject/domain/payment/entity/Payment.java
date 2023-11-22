@@ -1,6 +1,6 @@
 package com.miniproject.domain.payment.entity;
 
-import com.miniproject.domain.order.entity.Order;
+import com.miniproject.domain.orders.entity.Orders;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,5 +29,5 @@ public class Payment {
     private String paymentStatus;
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Orders order;
 }
