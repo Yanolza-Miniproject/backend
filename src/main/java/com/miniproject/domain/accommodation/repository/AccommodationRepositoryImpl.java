@@ -35,7 +35,7 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
             booleanBuilder.and(accommodation.categoryPickup.isTrue());
         }
         if (wishCount != null && wishCount >= 0) {
-            booleanBuilder.and(accommodation.likeCount.goe(wishCount));
+            booleanBuilder.and(accommodation.wishCount.goe(wishCount));
         }
         if (region01 != null && !region01.isEmpty()) {
             booleanBuilder.and(accommodation.address.contains(region01));

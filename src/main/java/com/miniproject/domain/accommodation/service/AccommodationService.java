@@ -32,7 +32,7 @@ public class AccommodationService {
                 .min(Integer::compare)
                 .orElse(null);
 
-        return AccommodationDetailResponse.fromEntity(accommodation, cheapestRoomPrice);
+        return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice);
     }
 
     // 동적 쿼리가 필요한 기능이므로 querydsl 사용이 추천됨

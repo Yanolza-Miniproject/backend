@@ -7,15 +7,15 @@ import lombok.Builder;
 public record RoomDTO(
         Long id,
         String name,
-        int price,
-        int capacity,
-        int inventory,
-        boolean categoryTv,
-        boolean categoryPc,
-        boolean categoryInternet,
-        boolean categoryRefrigerator,
-        boolean categoryBathingFacilities,
-        boolean categoryDryer
+        Integer price,
+        Integer capacity,
+        Integer inventory,
+        Boolean categoryTv,
+        Boolean categoryPc,
+        Boolean categoryInternet,
+        Boolean categoryRefrigerator,
+        Boolean categoryBathingFacilities,
+        Boolean categoryDryer
 ) {
 
     public static RoomDTO fromEntity(Room entity) {

@@ -1,13 +1,9 @@
 package com.miniproject.domain.accommodation.dto.response;
 
-import com.miniproject.domain.accommodation.dto.AccommodationDTO;
 import com.miniproject.domain.accommodation.entity.Accommodation;
-import com.miniproject.domain.room.dto.RoomDTO;
-import com.miniproject.domain.room.entity.Room;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 public record AccommodationSimpleResponse(
@@ -26,7 +22,7 @@ public record AccommodationSimpleResponse(
         Boolean categoryDiningArea,
         LocalDateTime checkIn,
         LocalDateTime checkOut,
-        Integer likeCount,
+        Integer wishCount,
         Integer lowest_price,
         Integer viewCount
 
@@ -50,7 +46,7 @@ public record AccommodationSimpleResponse(
                 .categoryDiningArea(entity.isCategoryDiningArea())
                 .checkIn(entity.getCheckIn())
                 .checkOut(entity.getCheckOut())
-                .likeCount(entity.getLikeCount())
+                .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
                 .lowest_price(lowestPrice)
                 .build();

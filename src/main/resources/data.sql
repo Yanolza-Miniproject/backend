@@ -1,4 +1,4 @@
-INSERT INTO `accommodation` (`id`, `name`, `type`, `address`, `phone_number`, `homepage`, `info_detail`, `thumbnail_url`, `category_parking`, `category_cooking`, `category_pickup`, `category_amenities`, `category_dining_area`, `check_in`, `check_out`, `like_count`, `view_count`)
+INSERT INTO `accommodation` (`id`, `name`, `type`, `address`, `phone_number`, `homepage`, `info_detail`, `thumbnail_url`, `category_parking`, `category_cooking`, `category_pickup`, `category_amenities`, `category_dining_area`, `check_in`, `check_out`, `wish_count`, `view_count`)
 VALUES
     (1, 'Accommodation1', 'Hotel', '경상남도 하동군 화개로 13', '123-456-7890', 'www.accommodation1.com', 'This is a detail for Accommodation1', 'www.accommodation1.com/thumbnail.jpg', 1, 0, 1, 0, 1, '2023-12-01 14:00:00', '2023-12-02 11:00:00', 10, 100),
     (2, 'Accommodation2', 'Motel', '제주특별자치도 서귀포시 중문관광로72번길 60', '234-567-8901', 'www.accommodation2.com', 'This is a detail for Accommodation2', 'www.accommodation2.com/thumbnail.jpg', 0, 1, 0, 1, 0, '2023-12-02 15:00:00', '2023-12-03 12:00:00', 20, 200),
