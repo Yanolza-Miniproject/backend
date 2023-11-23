@@ -1,12 +1,20 @@
 package com.miniproject.domain.basket.controller;
 
+import com.miniproject.domain.basket.dto.request.CheckBasketRequestDto;
 import com.miniproject.domain.basket.dto.response.BasketResponseDto;
 import com.miniproject.domain.basket.service.BasketService;
+import com.miniproject.domain.member.entity.Member;
 import com.miniproject.global.util.ResponseDTO;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,19 +23,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/baskets")
 public class BasketController {
 
-    @Autowired
-    private BasketService basketService;
+
+    private final BasketService basketService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<BasketResponseDto>> getBasket(){
+    public ResponseEntity<ResponseDTO<BasketResponseDto>> getBasket(Member member) {
         return ResponseEntity.ok().body(ResponseDTO
-                .res("장바구니 조회 성공", basketService.getBasket()));
+            .res("장바구니 조회 성공", basketService.getBasket(member)));
     }
 
-//    @PostMapping("/orders")
-//    public ResponseEntity<ResponseDTO> orderBasket(@RequestBody CheckBasketRequestDto dto) {
-//
-//    }
+    @PutMapping
+    public ResponseEntity<ResponseDTO> deleteRoomInBasket
+        (@RequestBody CheckBasketRequestDto dto, Member member) {
+        basketService.deleteRoomInBasket(dto, member);
+        return ResponseEntity.ok().body(ResponseDTO.res("장바구니 내 객실 삭제 완료"));
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<ResponseDTO> orderBasket
+        (@RequestBody CheckBasketRequestDto dto, Member member) {
+        Long orderId = basketService.registerOrder(dto, member);
+        return ResponseEntity.created(URI.create("api/v1/orders/" + orderId))
+            .body(ResponseDTO.res("장바구니에서 주문 생성", orderId));
+    }
 
 
 }
