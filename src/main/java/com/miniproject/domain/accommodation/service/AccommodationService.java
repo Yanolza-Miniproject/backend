@@ -25,6 +25,8 @@ public class AccommodationService {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
                 .orElseThrow();
 
+        accommodation.plusViewCount();
+
         Integer cheapestRoomPrice = accommodation.getRooms().stream()
                 .map(Room::getPrice)
                 .min(Integer::compare)
