@@ -1,5 +1,6 @@
 package com.miniproject.global.exception;
 
+import com.miniproject.domain.member.exception.MemberUnAuthorizedException;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -43,4 +44,13 @@ public class GlobalExceptionRestAdvice {
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ResponseDTO.res("서버 에러!"));
     }
+    @ExceptionHandler
+    public ResponseEntity<ResponseDTO<Object>> memberUnAuthorizedException(
+        MemberUnAuthorizedException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ResponseDTO.res(e.getMessage()));
+    }
+
 }
