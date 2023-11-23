@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,10 +25,19 @@ public class Payment {
 
     private String paymentType;
 
-    private int totalPrice;
-
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Orders order;
+    private Orders orders;
+
+    @Builder
+    public Payment(String paymentType, Orders orders) {
+        this.paymentType = paymentType;
+        this.orders = orders;
+        this.paymentStatus = PaymentStatus.PAYING;
+    }
+    public void completePayment(){
+        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETE;
+        this.paymentAt = LocalDateTime.now();
+    }
 }
