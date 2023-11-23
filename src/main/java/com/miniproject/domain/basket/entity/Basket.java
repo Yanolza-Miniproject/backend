@@ -25,7 +25,6 @@ public class Basket {
 
     private int totalPrice;
     private int totalCount;
-    private BasketStatus basketStatus;
 
     @OneToMany(mappedBy = "basket")
     private List<RoomInBasket> rooms = new ArrayList<>();
@@ -38,15 +37,10 @@ public class Basket {
     public Basket(){
         this.totalPrice = 0;
         this.totalCount = 0;
-        this.basketStatus = BasketStatus.ACTIVATE;
     }
 
-    public void ChangeStatus(BasketStatus basketStatus) {
-        this.basketStatus = basketStatus;
-    }
 
     public void RegisterRoom(RoomInBasket roomInBasket) {
-        this.rooms.add(roomInBasket);
         this.totalPrice += roomInBasket.getRoom().getPrice();
         this.totalCount +=1;
     }
