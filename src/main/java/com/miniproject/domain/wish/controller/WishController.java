@@ -1,17 +1,14 @@
 package com.miniproject.domain.wish.controller;
 
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.wish.dto.WishResponses;
-import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.service.WishService;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.miniproject.domain.wish.dto.WishResponses.*;
+import static com.miniproject.domain.wish.dto.WishResponses.AccommodationWishResDto;
 
 @RestController
 @RequiredArgsConstructor

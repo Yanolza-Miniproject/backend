@@ -1,6 +1,5 @@
 package com.miniproject.domain.accommodation.entity;
 
-import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.room.entity.Room;
 import jakarta.persistence.*;
 import lombok.*;

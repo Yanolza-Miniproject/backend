@@ -5,12 +5,10 @@ import com.miniproject.domain.accommodation.exception.AccommodationNotFoundExcep
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.exception.MemberNotFoundException;
-import com.miniproject.domain.wish.dto.WishResponses;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.exception.AlreadyWishException;
 import com.miniproject.domain.wish.exception.WishNotFoundException;
 import com.miniproject.domain.wish.repository.WishRepository;
-import com.miniproject.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.miniproject.domain.wish.dto.WishResponses.*;
+import static com.miniproject.domain.wish.dto.WishResponses.AccommodationWishResDto;
 
 @RequiredArgsConstructor
 @Transactional
