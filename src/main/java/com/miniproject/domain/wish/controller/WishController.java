@@ -6,7 +6,7 @@ import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.service.WishService;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class WishController {
     // 좋아요 누르기
     @PostMapping("/{accommodation_id}")
     public ResponseDTO addWish(@PathVariable(name = "accommodation_id") Long accommodationId,
-                              @AuthenticationPrincipal Member member) {
+                               Member member) {
         wishService.saveWish(accommodationId, member);
         return ResponseDTO.res("좋아요 성공");
     }

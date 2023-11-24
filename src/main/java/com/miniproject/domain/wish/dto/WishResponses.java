@@ -1,6 +1,7 @@
 package com.miniproject.domain.wish.dto;
 
 import com.miniproject.domain.accommodation.dto.AccommodationDTO;
+import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.wish.entity.Wish;
 import lombok.AccessLevel;
