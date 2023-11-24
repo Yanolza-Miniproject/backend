@@ -51,8 +51,13 @@ public class Accommodation {
     @Column
     private LocalDateTime checkOut;
     @Column
-    private int likeCount;
+    private int wishCount;
     @Column
     private int viewCount;
+
+    public void plusViewCount() {
+        this.viewCount = this.viewCount + 1;
+    }
+
 
 }
