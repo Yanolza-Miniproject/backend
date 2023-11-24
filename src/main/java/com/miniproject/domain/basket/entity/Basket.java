@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +35,11 @@ public class Basket {
     private Member member;
 
     @Builder
-    public Basket(){
+    public Basket(Member member, Long id){
+        this.id = id;
         this.totalPrice = 0;
         this.totalCount = 0;
+        this.member = member;
     }
 
 
