@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +34,14 @@ public class PaymentService {
         return new PaymentResponseDto(payment);
     }
 
-    public List<PaymentResponseDto> getPayments(Member member) {
-        return paymentRepository.findByMember(member).stream().map(
-            payment -> new PaymentResponseDto(payment)).collect(Collectors.toList());
+    public List<PaymentResponseDto> getPayments(Integer page, Integer pageSize, Member member) {
+        Page<Payment> allByMemberContaining = paymentRepository.findAllByMemberContaining(
+            PageRequest.of(page - 1, pageSize), member);
+        return allByMemberContaining.stream()
+            .map(payment -> new PaymentResponseDto(payment))
+            .collect(Collectors.toList());
+
+
     }
 
     public void completePayment(Long paymentId, Member member){

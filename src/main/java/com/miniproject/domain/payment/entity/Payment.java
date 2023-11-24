@@ -1,11 +1,13 @@
 package com.miniproject.domain.payment.entity;
 
+import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.orders.entity.Orders;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -30,8 +32,13 @@ public class Payment {
     @JoinColumn(name = "order_id")
     private Orders orders;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
-    public Payment(String paymentType, Orders orders) {
+    public Payment(String paymentType, Orders orders,Member member) {
+        this.member = member;
         this.paymentType = paymentType;
         this.orders = orders;
         this.paymentStatus = PaymentStatus.PAYING;

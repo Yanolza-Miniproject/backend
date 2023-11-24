@@ -23,10 +23,7 @@ public class OrdersService {
 
     private final PaymentRepository paymentRepository;
 
-    public List<OrdersResponseDto> getOrders(Member member) {
-        return ordersRepository.findByMember(member).stream().map(
-            orders -> new OrdersResponseDto(orders)).collect(Collectors.toList());
-    }
+
 
     public OrdersResponseDto getOrder(Long orderId, Member member) {
         Orders orders = getOrders(orderId, member);
@@ -38,6 +35,7 @@ public class OrdersService {
         Payment payment = Payment.builder()
             .paymentType(paymentType)
             .orders(orders)
+            .member(member)
             .build();
         return paymentRepository.save(payment).getId();
     }

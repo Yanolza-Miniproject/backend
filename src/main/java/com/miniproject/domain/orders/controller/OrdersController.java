@@ -23,13 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrdersController {
 
     private final OrdersService ordersService;
-    @GetMapping
-    public ResponseEntity<ResponseDTO<List<OrdersResponseDto>>> getOrders(Member member) {
 
-        return ResponseEntity.ok()
-            .body(ResponseDTO.res("주문 상세 조회 완료", ordersService.getOrders(member)));
-
-    }
 
     @GetMapping("/{orders_id}")
     public ResponseEntity<ResponseDTO<OrdersResponseDto>> getOrder(@PathVariable Long orders_id,Member member) {
