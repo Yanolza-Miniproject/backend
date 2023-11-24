@@ -18,21 +18,22 @@ public record AccommodationDetailResponse(
         String homepage,
         String infoDetail,
         String thumbnailUrl,
-        boolean categoryParking,
-        boolean categoryCooking,
-        boolean categoryPickup,
-        boolean categoryAmenities,
-        boolean categoryDiningArea,
+        Boolean categoryParking,
+        Boolean categoryCooking,
+        Boolean categoryPickup,
+        Boolean categoryAmenities,
+        Boolean categoryDiningArea,
         LocalDateTime checkIn,
         LocalDateTime checkOut,
-        int likeCount,
-        int viewCount,
+        Integer wishCount,
+        Integer viewCount,
+        Integer lowest_price,
         List<RoomDTO> rooms
 
 
 ) {
 
-    public static AccommodationDetailResponse fromEntity(Accommodation entity) {
+    public static AccommodationDetailResponse formEntity(Accommodation entity, Integer lowestPrice) {
 
         List<Room> rooms = entity.getRooms();
         List<RoomDTO> roomDTOs = rooms.stream()
@@ -55,8 +56,9 @@ public record AccommodationDetailResponse(
                 .categoryDiningArea(entity.isCategoryDiningArea())
                 .checkIn(entity.getCheckIn())
                 .checkOut(entity.getCheckOut())
-                .likeCount(entity.getLikeCount())
+                .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
+                .lowest_price(lowestPrice)
                 .rooms(roomDTOs)
                 .build();
     }

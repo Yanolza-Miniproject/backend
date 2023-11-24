@@ -55,4 +55,9 @@ public class Accommodation {
     @Column
     private int viewCount;
 
+    public void plusViewCount() {
+        this.viewCount = this.viewCount + 1;
+    }
+
+
 }
