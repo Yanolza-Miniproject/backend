@@ -17,19 +17,19 @@ public record AccommodationDTO(
         String homepage,
         String infoDetail,
         String thumbnailUrl,
-        boolean categoryParking,
-        boolean categoryCooking,
-        boolean categoryPickup,
-        boolean categoryAmenities,
-        boolean categoryDiningArea,
+        Boolean categoryParking,
+        Boolean categoryCooking,
+        Boolean categoryPickup,
+        Boolean categoryAmenities,
+        Boolean categoryDiningArea,
         LocalDateTime checkIn,
         LocalDateTime checkOut,
-        int wishCount,
-        int viewCount,
+        Integer wishCount,
+        Integer viewCount,
         List<RoomDTO> rooms
 
 ) {
-    public static AccommodationDTO formEntity(Accommodation entity) {
+    public static AccommodationDTO fromEntity(Accommodation entity) {
         List<RoomDTO> rooms = entity.getRooms()
                 .stream()
                 .map(RoomDTO::fromEntity)
