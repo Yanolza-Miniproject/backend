@@ -39,8 +39,7 @@ public class WishService {
                 .member(loginMember).build();
 
         wishRepository.save(wish);
-        // 좋아요 개수를 늘리는 로직이 필요한가?
-//        accommodation.
+        accommodation.plusWishCount();
     }
 
     private boolean isAlreadyWish(Accommodation accommodation, Member member) {
@@ -55,12 +54,17 @@ public class WishService {
                 .orElseThrow(WishNotFoundException::new);
 
         wishRepository.delete(wish);
-        // 좋아요 개수를 줄이는 로직이 필요한가?
+        accommodation.minusWishCount();
     }
 
     public List<Long> getWishesOnlyAccommodationId(Member member) {
-        return wishRepository.findAllByMember(member)
-                .orElseThrow(NotFoundMemberException::new);
+        List<Wish> wishes = wishRepository.findAllByMember(member)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return wishes.stream()
+                .map(Wish::getAccommodation)
+                .map(Accommodation::getId)
+                .collect(Collectors.toList());
     }
 
     public List<AccommodationWishResDto> getWishes(Member member) {
