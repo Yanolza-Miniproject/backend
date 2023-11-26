@@ -30,10 +30,9 @@ public class OrdersService {
         return new OrdersResponseDto(orders);
     }
 
-    public Long registerPayment(Long orderId, String paymentType, Member member) {
+    public Long registerPayment(Long orderId,Member member) {
         Orders orders = getOrders(orderId, member);
         Payment payment = Payment.builder()
-            .paymentType(paymentType)
             .orders(orders)
             .member(member)
             .build();

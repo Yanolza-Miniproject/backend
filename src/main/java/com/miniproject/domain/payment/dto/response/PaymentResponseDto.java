@@ -18,7 +18,7 @@ public class PaymentResponseDto {
     private int totalPrice;
     private int totalCount;
     private LocalDateTime paymentAt;
-    private String paymentType;
+
     private List<RoomInOrdersGetResponseDto> rooms;
 
     public PaymentResponseDto (Payment payment) {
@@ -26,7 +26,6 @@ public class PaymentResponseDto {
         this.totalPrice = payment.getOrders().getTotalPrice();
         this.totalCount = payment.getOrders().getTotalCount();
         this.paymentAt = payment.getPaymentAt();
-        this.paymentType = payment.getPaymentType();
         this.rooms = payment.getOrders().getRoomInOrders().stream().map(
                 roomInOrders -> new RoomInOrdersGetResponseDto(roomInOrders))
             .collect(Collectors.toList());

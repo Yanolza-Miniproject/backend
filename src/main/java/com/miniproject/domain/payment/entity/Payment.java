@@ -25,7 +25,7 @@ public class Payment {
 
     private LocalDateTime paymentAt;
 
-    private String paymentType;
+
 
     private PaymentStatus paymentStatus;
     @OneToOne
@@ -37,9 +37,8 @@ public class Payment {
     private Member member;
 
     @Builder
-    public Payment(String paymentType, Orders orders,Member member) {
+    public Payment(Orders orders,Member member) {
         this.member = member;
-        this.paymentType = paymentType;
         this.orders = orders;
         this.paymentStatus = PaymentStatus.PAYING;
     }

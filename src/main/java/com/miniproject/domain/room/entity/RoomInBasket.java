@@ -8,13 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+;
 
 @Entity
 @Getter
@@ -35,6 +35,7 @@ public class RoomInBasket {
     @JoinColumn(name = "basket_id")
     private Basket basket;
 
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -45,13 +46,15 @@ public class RoomInBasket {
 
     @Builder
     public RoomInBasket(LocalDateTime checkInAt, LocalDateTime checkOutAt,
-                        int numberOfGuests, Basket basket, Member member,Room room) {
+        int numberOfGuests, Basket basket, Member member, Room room) {
+
         this.checkInAt = checkInAt;
         this.checkOutAt = checkOutAt;
         this.numberOfGuests = numberOfGuests;
         this.room = room;
         this.basket = basket;
         this.member = member;
-
     }
+
+
 }

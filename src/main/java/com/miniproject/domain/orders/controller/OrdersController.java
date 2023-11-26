@@ -35,8 +35,8 @@ public class OrdersController {
 
     @PostMapping("/{orders_id}/payment")
     public ResponseEntity<ResponseDTO> paymentOrder(@PathVariable Long orders_id
-        , @RequestBody String paymentType,Member member) {
-        Long paymentId = ordersService.registerPayment(orders_id, paymentType,member);
+        ,Member member) {
+        Long paymentId = ordersService.registerPayment(orders_id,member);
         return ResponseEntity.created(URI.create("api/v1/orders/{orders_id}/payment/" + paymentId))
             .body(ResponseDTO.res("결제 생성 완료", paymentId));
     }

@@ -3,11 +3,8 @@ package com.miniproject.domain.payment.controller;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.payment.service.PaymentService;
 import com.miniproject.global.util.ResponseDTO;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +20,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> getPayments(@PathVariable Long payment_id,Member member,
+    public ResponseEntity<ResponseDTO> getPayments(Member member,
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "20")int pageSize) {
 
