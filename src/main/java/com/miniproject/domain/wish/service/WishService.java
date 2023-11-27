@@ -3,6 +3,7 @@ package com.miniproject.domain.wish.service;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
+import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.wish.dto.WishResponses;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.exception.AlreadyWishException;
@@ -25,18 +26,21 @@ public class WishService {
 
     private final WishRepository wishRepository;
     private final AccommodationRepository accommodationRepository;
+    private final MemberRepository memberRepository;
 
-    public void saveWish(Long accommodationId, Member loginMember) {
+    public void saveWish(Long accommodationId, LoginInfo loginInfo) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow(() -> new AccommodationNotFoundException("해당 숙소가 존재하지 않습니다 : " + accommodationId));
+                .orElseThrow(AccommodationNotFoundException::new);
 
-        if (isAlreadyWish(accommodation, loginMember)) {
+        Member member = memberRepository.findByEmail(loginInfo.userEmail());
+
+        if (isAlreadyWish(accommodation, member)) {
             throw new AlreadyWishException();
         }
 
         Wish wish = Wish.builder()
                 .accommodation(accommodation)
-                .member(loginMember).build();
+                .member(member).build();
 
         wishRepository.save(wish);
         accommodation.plusWishCount();
@@ -46,9 +50,11 @@ public class WishService {
         return wishRepository.findByMemberAndAccommodation(member, accommodation).isPresent();
     }
 
-    public void deleteWish(Long accommodationId, Member member) {
+    public void deleteWish(Long accommodationId, LoginInfo loginInfo) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow(() -> new AccommodationNotFoundException("해당 숙소가 존재하지 않습니다 : " + accommodationId));
+                .orElseThrow(AccommodationNotFoundException::new);
+
+        Member member = memberRepository.findByEmail(loginInfo.userEmail());
 
         Wish wish = wishRepository.findByMemberAndAccommodation(member, accommodation)
                 .orElseThrow(WishNotFoundException::new);
@@ -67,13 +73,15 @@ public class WishService {
                 .collect(Collectors.toList());
     }
 
-    public List<AccommodationWishResDto> getWishes(Member member) {
+    public List<AccommodationWishResDto> getWishes(LoginInfo loginInfo) {
+
+        Member member = memberRepository.findByEmail(loginInfo.userEmail());
+
         List<Wish> wishes = wishRepository.findAllByMember(member)
-                .orElseThrow(NotFoundMemberException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         return wishes.stream()
                 .map(AccommodationWishResDto::fromEntity)
                 .collect(Collectors.toList());
     }
 }
-
