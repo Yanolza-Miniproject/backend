@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
@@ -39,15 +40,24 @@ public class SecurityFilterConfig {
                 .sessionManagement(sessionConfig ->
                         sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+//
+//        http.authorizeHttpRequests(request ->
+//                request
+//                        .requestMatchers("/api/v1/accommodations", "/api/v1/accommodations/**").permitAll()
+//                        .requestMatchers("/api/v1/members/join", "/api/v1/members/login", "/api/v1/refresh").permitAll()
+//                        .requestMatchers("/api/v1/rooms", "/api/v1/rooms/**").permitAll()
+//                        .requestMatchers("/api/v1/rooms/{room_id}/orders").authenticated()
+//                        .anyRequest().authenticated()
+//        );
 
-        http.authorizeHttpRequests(request ->
-                request
-                        .requestMatchers("/api/v1/accommodations", "/api/v1/accommodations/**").permitAll()
-                        .requestMatchers("/api/v1/members/join", "/api/v1/members/login", "/api/v1/refresh").permitAll()
-                        .requestMatchers("/api/v1/rooms", "/api/v1/rooms/**").permitAll()
-                        .requestMatchers("/api/v1/rooms/{room_id}/orders").authenticated()
-                        .anyRequest().authenticated()
-        );
+//        http.authorizeHttpRequests(request ->
+//                request
+//                        .requestMatchers("/api/v1/accommodations", "/api/v1/accommodations/**").permitAll()
+//                        .requestMatchers("/api/v1/members/join", "/api/v1/members/login", "/api/v1/refresh").permitAll()
+//                        .requestMatchers("/api/v1/rooms", "/api/v1/rooms/**").permitAll()
+//                        .requestMatchers("/api/v1/rooms/{room_id}/orders").authenticated()
+//                        .anyRequest().authenticated()
+//        );
 
       //  http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
@@ -61,10 +71,27 @@ public class SecurityFilterConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web ->
-                web.ignoring()
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                        .requestMatchers("/favicon.ico", "/resources/**", "/error")
-                        .requestMatchers("/h2-console/**", "/favicon.ico", "/css/**","/js/**","/img/**","/lib/**");
+        return (web) -> web.ignoring().
+                requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/favicon.ico"))
+                .requestMatchers(new AntPathRequestMatcher( "/css/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/js/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/img/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/lib/**"));
     }
+
+
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return web ->
+//                web.ignoring()
+//                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+//                        .requestMatchers("/favicon.ico", "/resources/**", "/error");
+////                        .requestMatchers(new AntPathRequestMatcher("/favicon.ico"))
+////                        .requestMatchers(new AntPathRequestMatcher("/css/**"))
+////                        .requestMatchers(new AntPathRequestMatcher("/js/**"))
+////                        .requestMatchers(new AntPathRequestMatcher("/img/**"))
+////                        .requestMatchers(new AntPathRequestMatcher("/lib/**"));
+//
+//    }
 }

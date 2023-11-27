@@ -1,12 +1,12 @@
 package com.miniproject.domain.member.entity;
 
-import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.orders.entity.Orders;
+import com.miniproject.domain.wish.entity.Wish;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @EqualsAndHashCode(of = "id")
@@ -14,33 +14,37 @@ import java.util.ArrayList;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String email;
-
-    private String name;
-
-    private String password;
-
-    private String phoneNumber;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Wish> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Orders> orders = new ArrayList<>();
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String email;
+
+    private String nickname;
+
+    private String password;
+
+    private String phoneNumber;
+
 
 
     @Builder
-    private Member(Long id, String email, String name, String password, String number) {
+    public Member(Long id, String email, String nickname, String password, String phoneNumber,
+                  List<Wish> likes, List<Orders> orders) {
         this.id = id;
         this.email = email;
-        this.name = name;
+        this.nickname = nickname;
         this.password = password;
-        this.phoneNumber = number;
+        this.phoneNumber = phoneNumber;
+        this.likes = likes;
+        this.orders = orders;
+
     }
 
 }
