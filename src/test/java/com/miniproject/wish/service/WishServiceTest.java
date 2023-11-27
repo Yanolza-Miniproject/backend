@@ -5,14 +5,12 @@ import com.miniproject.domain.accommodation.exception.AccommodationNotFoundExcep
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.repository.MemberRepository;
-import com.miniproject.domain.wish.dto.WishResponses;
 import com.miniproject.domain.wish.dto.WishResponses.AccommodationWishResDto;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.exception.AlreadyWishException;
 import com.miniproject.domain.wish.exception.WishNotFoundException;
 import com.miniproject.domain.wish.repository.WishRepository;
 import com.miniproject.domain.wish.service.WishService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,20 +23,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @WithMockUser

@@ -1,9 +1,7 @@
 package com.miniproject.wish.repository;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
-import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.repository.WishRepository;
 import org.junit.jupiter.api.BeforeEach;
