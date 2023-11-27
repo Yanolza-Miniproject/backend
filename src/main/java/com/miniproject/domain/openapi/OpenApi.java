@@ -1,14 +1,49 @@
 package com.miniproject.domain.openapi;
 
-import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.miniproject.domain.openapi.dto.AccommodationCommon;
+import com.miniproject.domain.openapi.dto.AccommodationDetailInfo;
+import com.miniproject.domain.openapi.dto.AccommodationIntro;
+import com.miniproject.domain.openapi.service.ApiSaveService;
+import com.miniproject.domain.openapi.service.UrlService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
 public class OpenApi {
 
-    private RestTemplate restTemplate;
+    private final UrlService urlService;
+    private final ApiSaveService apiSaveService;
 
-    String secretKey = "6NKGVwiUsALByF989ns0LeGMRJ5r%2F%2BZdKF1i6CvWsD7bW13srHcst1xDVutnXPhtZ36Xa00PMZRRfbMuXaUk2g%3D%3D";
+    @EventListener(ApplicationReadyEvent.class)
+    public void GetOpenApiData() throws JsonProcessingException {
 
-    String accommodationListUrl = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=10&pageNo=1&MobileOS=WIN&MobileApp=MiniPorject&serviceKey=6NKGVwiUsALByF989ns0LeGMRJ5r%2F%2BZdKF1i6CvWsD7bW13srHcst1xDVutnXPhtZ36Xa00PMZRRfbMuXaUk2g%3D%3D";
+        List<String> contentIdList = urlService.getContentId().block();
+
+        List<AccommodationCommon> accommodationCommons;
+        List<AccommodationIntro> accommodationIntros;
+        List<AccommodationDetailInfo> accommodationDetailInfos;
+        if(contentIdList != null) {
+            accommodationCommons = urlService.getAccommodationCommon(contentIdList).block();
+            System.out.println("25% 완료");
+            accommodationIntros = urlService.getAccommodationIntro(contentIdList).block();
+            System.out.println("50% 완료");
+            accommodationDetailInfos = urlService.getAccommodationDetailInfo(contentIdList).flatMap(Flux::fromIterable).collectList().block();
+            System.out.println("75% 완료");
+            apiSaveService.saveAccommodations(accommodationCommons, accommodationIntros, accommodationDetailInfos);
+            System.out.println("100% 완료");
+
+        }
+
+
+    }
 
 
 }
