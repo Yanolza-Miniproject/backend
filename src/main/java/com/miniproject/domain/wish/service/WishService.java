@@ -51,7 +51,7 @@ public class WishService {
         return wishRepository.findByMemberAndAccommodation(member, accommodation).isPresent();
     }
 
-    public Long deleteWish(Long accommodationId, LoginInfo loginInfo) {
+    public void deleteWish(Long accommodationId, LoginInfo loginInfo) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
                 .orElseThrow(AccommodationNotFoundException::new);
 
