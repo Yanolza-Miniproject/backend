@@ -5,6 +5,7 @@ import com.miniproject.domain.payment.service.PaymentService;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> getPayments(Member member,
+    public ResponseEntity<ResponseDTO> getPayments(@AuthenticationPrincipal Member member,
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "20")int pageSize) {
 
@@ -30,24 +31,11 @@ public class PaymentController {
     }
 
     @GetMapping("/{payment_id}")
-    public ResponseEntity<ResponseDTO> getPayment(@PathVariable Long payment_id,Member member) {
+    public ResponseEntity<ResponseDTO> getPayment
+        (@PathVariable Long payment_id,@AuthenticationPrincipal Member member) {
         return ResponseEntity.ok()
-            .body(ResponseDTO.res("결제 불러오기 성공", paymentService.getPayment(payment_id,member)));
-    }
-
-    @PostMapping("/{payment_id}")
-    public ResponseEntity<ResponseDTO> completePayment(@PathVariable Long payment_id,
-        Member member) {
-        paymentService.completePayment(payment_id, member);
-        return ResponseEntity.ok()
-            .body(ResponseDTO.res("결제 완료"));
-    }
-
-    @PostMapping("/{payment_id}")
-    public ResponseEntity<ResponseDTO> deletePayment(@PathVariable Long payment_id, Member member) {
-        paymentService.deletePayment(payment_id, member);
-        return ResponseEntity.ok()
-            .body(ResponseDTO.res("결제 취소"));
+            .body(ResponseDTO.res("결제 불러오기 성공",
+                paymentService.getPayment(payment_id,member)));
     }
 
 
