@@ -18,7 +18,6 @@ public class ResponseDTO<T> {
 
     public static ResponseDTO<Object> res(final String message) {
         return ResponseDTO.<Object>builder()
-
             .message(message)
             .build();
     }
