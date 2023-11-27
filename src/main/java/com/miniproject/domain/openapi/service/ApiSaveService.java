@@ -8,12 +8,15 @@ import com.miniproject.domain.openapi.dto.AccommodationIntro;
 import com.miniproject.domain.openapi.dto.RoomImageUrlDto;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomImage;
+import com.miniproject.domain.room.entity.RoomInventory;
 import com.miniproject.domain.room.repository.RoomImageRepository;
+import com.miniproject.domain.room.repository.RoomInventoryRepository;
 import com.miniproject.domain.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,7 @@ public class ApiSaveService {
     private final AccommodationRepository accommodationRepository;
     private final RoomRepository roomRepository;
     private final RoomImageRepository roomImageRepository;
+    private final RoomInventoryRepository roomInventoryRepository;
 
     @Transactional
     public void saveAccommodations(List<AccommodationCommon> accommodationCommons,
@@ -94,12 +98,13 @@ public class ApiSaveService {
     }
 
     private Room saveRoomAndImages(AccommodationDetailInfo detailInfo, Accommodation accommodation) {
+        System.out.println(detailInfo);
         Room room = Room.builder()
                 .accommodation(accommodation)
                 .name(detailInfo.roomtitle())
                 .price(detailInfo.roomoffseasonminfee1())
                 .capacity(detailInfo.roombasecount())
-                .inventory(detailInfo.roomcount())
+                .inventory(detailInfo.roomcount() == 0 ? 1: detailInfo.roomcount())
                 .categoryTv(detailInfo.roomtv())
                 .categoryPc(detailInfo.roompc())
                 .categoryInternet(detailInfo.roominternet())
@@ -115,6 +120,18 @@ public class ApiSaveService {
                 .collect(Collectors.toList());
 
         roomImageRepository.saveAll(roomImages);
+
+        List<RoomInventory> roomInventories = new ArrayList<>();
+        for(int i = 0; i < 37; i++){
+            RoomInventory roomInventory = RoomInventory.builder()
+                    .date(LocalDate.now().plusDays(i))
+                    .inventory(detailInfo.roomcount() == 0 ? 1: detailInfo.roomcount())
+                    .room(room)
+                    .build();
+            roomInventories.add(roomInventory);
+        }
+
+        roomInventoryRepository.saveAll(roomInventories);
 
         return room;
     }

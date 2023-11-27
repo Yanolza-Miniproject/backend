@@ -21,6 +21,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -218,7 +219,10 @@ public class UrlService {
 
     public Flux<List<AccommodationDetailInfo>> getAccommodationDetailInfo(List<String> contentIdList) {
 
-        List<AccommodationDetailInfo> accommodationDetailInfos = new ArrayList<>();
+//        List<AccommodationDetailInfo> accommodationDetailInfos = new ArrayList<>();
+        // 해당 리스트에 대한 동시 접근에 대비한 synchronizedList를 이용한 선언
+        // 지금은 저장과 순회가 별개로 이루어지지만 동시에 이루어진다면 순회 시 synchronized로 동기화 블록을 해야한다. << 나중에 더 알아보자
+        List<AccommodationDetailInfo> accommodationDetailInfos = Collections.synchronizedList(new ArrayList<>());
 
         return Flux.fromIterable(contentIdList)
                 .flatMap(contentId -> {
@@ -244,6 +248,7 @@ public class UrlService {
                                     .build())
                             .retrieve()
                             .bodyToMono(String.class)
+                            // concatMap 만약 이거 관련 오류 발생 시
                             .flatMap(response -> {
                                 try {
                                     JsonNode root = objectMapper.readTree(response);
@@ -287,7 +292,6 @@ public class UrlService {
                                         return Mono.error(e);
                                     } else {
                                         return Mono.empty();
-//                                        return Mono.just(accommodationDetailInfos);
                                     }
                                 }
                             })
