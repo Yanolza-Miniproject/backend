@@ -30,8 +30,9 @@ public class RoomInBasketGetResponseDto {
         this.numberOfGuests = room.getNumberOfGuests();
         this.checkInAt = room.getCheckInAt();
         this.checkOutAt = room.getCheckOutAt();
-        // image 가 null 일때, 예외처리 필요
-        this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
+        if (room.getRoom().getRoomImages()!=null) {
+            this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
+        }
     }
 
     @Builder

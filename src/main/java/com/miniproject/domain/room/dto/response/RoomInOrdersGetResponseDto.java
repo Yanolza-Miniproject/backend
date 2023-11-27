@@ -2,9 +2,15 @@ package com.miniproject.domain.room.dto.response;
 
 import com.miniproject.domain.room.entity.RoomInOrders;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomInOrdersGetResponseDto {
     Long id;
     String accommodationName;
@@ -24,7 +30,8 @@ public class RoomInOrdersGetResponseDto {
         this.checkInAt = room.getCheckInAt();
         this.checkOutAt = room.getCheckOutAt();
         // image 가 null 일때, 예외처리 필요
-        this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
-
+        if (room.getRoom().getRoomImages()!=null){
+            this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
+        }
     }
 }
