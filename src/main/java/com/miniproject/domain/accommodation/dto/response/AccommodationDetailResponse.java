@@ -1,18 +1,21 @@
 package com.miniproject.domain.accommodation.dto.response;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.room.dto.RoomDTO;
 import com.miniproject.domain.room.entity.Room;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
 public record AccommodationDetailResponse(
         Long id,
         String name,
-        String type,
+        Integer type,
         String address,
         String phoneNumber,
         String homepage,
@@ -21,10 +24,10 @@ public record AccommodationDetailResponse(
         Boolean categoryParking,
         Boolean categoryCooking,
         Boolean categoryPickup,
-        Boolean categoryAmenities,
-        Boolean categoryDiningArea,
-        LocalDateTime checkIn,
-        LocalDateTime checkOut,
+        String categoryAmenities,
+        String categoryDiningArea,
+        String checkIn,
+        String checkOut,
         Integer wishCount,
         Integer viewCount,
         Integer lowest_price,
@@ -40,10 +43,14 @@ public record AccommodationDetailResponse(
                 .map(RoomDTO::fromEntity)
                 .toList();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedCheckIn = entity.getCheckIn().format(formatter);
+        String formattedCheckOut = entity.getCheckOut().format(formatter);
+
         return AccommodationDetailResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .type(entity.getType())
+                .type(entity.getType().getIndex())
                 .address(entity.getAddress())
                 .phoneNumber(entity.getPhoneNumber())
                 .homepage(entity.getHomepage())
@@ -52,10 +59,10 @@ public record AccommodationDetailResponse(
                 .categoryParking(entity.isCategoryParking())
                 .categoryCooking(entity.isCategoryCooking())
                 .categoryPickup(entity.isCategoryPickup())
-                .categoryAmenities(entity.isCategoryAmenities())
-                .categoryDiningArea(entity.isCategoryDiningArea())
-                .checkIn(entity.getCheckIn())
-                .checkOut(entity.getCheckOut())
+                .categoryAmenities(entity.getCategoryAmenities())
+                .categoryDiningArea(entity.getCategoryDiningArea())
+                .checkIn(formattedCheckIn)
+                .checkOut(formattedCheckOut)
                 .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
                 .lowest_price(lowestPrice)

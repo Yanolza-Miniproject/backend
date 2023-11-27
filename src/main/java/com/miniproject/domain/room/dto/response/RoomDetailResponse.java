@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record RoomDetailResponse(
         Long id,
+        String accommodationName,
         String name,
         Integer price,
         Integer capacity,
@@ -21,6 +22,7 @@ public record RoomDetailResponse(
     public static RoomDetailResponse fromEntity(Room entity) {
         return RoomDetailResponse.builder()
                 .id(entity.getId())
+                .accommodationName(entity.getAccommodation().getName())
                 .name(entity.getName())
                 .price(entity.getPrice())
                 .capacity(entity.getCapacity())

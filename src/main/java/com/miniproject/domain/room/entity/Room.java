@@ -1,13 +1,10 @@
 package com.miniproject.domain.room.entity;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -22,6 +19,9 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "accommodation_id")
     private Accommodation accommodation;
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    private List<RoomImage> roomImages;
 
     private String name;
 
