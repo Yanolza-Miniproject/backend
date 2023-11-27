@@ -43,10 +43,9 @@ public class JwtService {
         String accessToken = jwtProvider.createToken(jwtPayload, accessExpiration);
         String refreshToken = jwtProvider.createToken(jwtPayload, refreshExpiration);
 
-        Member member = memberRepository.findByEmail(jwtPayload.email()).orElseThrow();
         refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .memberId(member.getId())
+                        .memberEmail(jwtPayload.email())
                         .token(refreshToken)
                         .expiryDate(LocalDateTime.now().plusNanos(refreshExpiration*1000000))
                         .build());
@@ -65,9 +64,9 @@ public class JwtService {
         JwtPayload jwtPayload = verifyToken(request.refreshToken());
         
         //DB에 저장된 member의 리프레시 토큰을 꺼내옴
-        Member member = memberRepository.findByEmail(jwtPayload.email()).orElseThrow();
-        String savedTokenInfo = refreshTokenRepository.findByMemberId(member.getId()).getToken();
+        var refreshtoken = refreshTokenRepository.findRefreshTokenByMemberEmail(jwtPayload.email());
 
+        String savedTokenInfo = refreshtoken.getToken();
         //같은지 비교
         if (!isAcceptable(savedTokenInfo, request.refreshToken())) {
             throw new RuntimeException("적절치 않은 RefreshToken 입니다.");
