@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,14 +42,21 @@ public class RoomInOrders {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @OneToOne
+    @JoinColumn(name = "roomInBasket_id")
+    private RoomInBasket roomInBasket;
+
+
     @Builder
-    public RoomInOrders(LocalDateTime checkInAt, LocalDateTime checkOutAt,
-        int numberOfGuests, Orders orders, Member member,Room room) {
+    public RoomInOrders(Long id, LocalDateTime checkInAt, LocalDateTime checkOutAt,
+        int numberOfGuests, Orders orders, Member member,Room room,RoomInBasket roomInBasket) {
+        this.id = id;
         this.checkInAt = checkInAt;
         this.checkOutAt = checkOutAt;
         this.numberOfGuests = numberOfGuests;
         this.room = room;
         this.orders = orders;
         this.member = member;
+        this.roomInBasket = roomInBasket;
     }
 }
