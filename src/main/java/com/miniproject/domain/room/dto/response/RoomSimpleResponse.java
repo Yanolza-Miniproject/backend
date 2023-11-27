@@ -8,7 +8,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record RoomDetailResponse(
+public record RoomSimpleResponse(
         Long id,
         String accommodationName,
         String name,
@@ -20,18 +20,13 @@ public record RoomDetailResponse(
         Boolean categoryInternet,
         Boolean categoryRefrigerator,
         Boolean categoryBathingFacilities,
-        Boolean categoryDryer,
-        List<RoomInventoryDTO> roomInventories
+        Boolean categoryDryer
+
 ) {
 
-    public static RoomDetailResponse fromEntity(Room entity) {
+    public static RoomSimpleResponse fromEntity(Room entity) {
 
-        List<RoomInventory> roomInventories = entity.getRoomInventories();
-        List<RoomInventoryDTO> roomInventoryDTOList = roomInventories.stream()
-                .map(RoomInventoryDTO::fromEntity)
-                .toList();
-
-        return RoomDetailResponse.builder()
+        return RoomSimpleResponse.builder()
                 .id(entity.getId())
                 .accommodationName(entity.getAccommodation().getName())
                 .name(entity.getName())
@@ -44,7 +39,6 @@ public record RoomDetailResponse(
                 .categoryRefrigerator(entity.isCategoryRefrigerator())
                 .categoryBathingFacilities(entity.isCategoryBathingFacilities())
                 .categoryDryer(entity.isCategoryDryer())
-                .roomInventories(roomInventoryDTOList)
                 .build();
     }
 }

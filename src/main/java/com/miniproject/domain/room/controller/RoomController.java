@@ -1,6 +1,7 @@
 package com.miniproject.domain.room.controller;
 
 import com.miniproject.domain.room.dto.response.RoomDetailResponse;
+import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.service.RoomService;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class RoomController {
 
     // 숙소의 전체 객실 조회 + 필터링
     @GetMapping("accommodations/{accommodationId}/rooms")
-    public ResponseEntity<ResponseDTO<List<RoomDetailResponse>>> getRooms(
+    public ResponseEntity<ResponseDTO<List<RoomSimpleResponse>>> getRooms(
             @PathVariable Long accommodationId,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(required = false, name = "category-tv") Integer categoryTv,
@@ -38,11 +40,14 @@ public class RoomController {
             @RequestParam(required = false, name = "category-internet") Integer categoryInternet,
             @RequestParam(required = false, name = "category-refrigerator") Integer categoryRefrigerator,
             @RequestParam(required = false, name = "category-bathing-facilities") Integer categoryBathingFacilities,
-            @RequestParam(required = false, name = "category-dryer") Integer categoryDryer
-    ) {
+            @RequestParam(required = false, name = "category-dryer") Integer categoryDryer,
+            @RequestParam(name = "checkin-day")LocalDate checkinDay,
+            @RequestParam(name = "checkout-day")LocalDate checkoutDay
+            ) {
+
         Pageable pageable = PageRequest.of(page, 20);
 
-        Page<RoomDetailResponse> roomDetailResponsePage =
+        List<RoomSimpleResponse> roomSimpleResponseList =
                 roomService.getRoomsByAccommodationId(
                         accommodationId,
                         pageable,
@@ -51,12 +56,12 @@ public class RoomController {
                         categoryInternet,
                         categoryRefrigerator,
                         categoryBathingFacilities,
-                        categoryDryer);
-
-        List<RoomDetailResponse> roomDetailResponseList = roomDetailResponsePage.getContent();
+                        categoryDryer,
+                        checkinDay,
+                        checkoutDay);
 
         return ResponseEntity.ok(
-                ResponseDTO.res("성공", roomDetailResponseList)
+                ResponseDTO.res("성공", roomSimpleResponseList)
         );
 
     }
