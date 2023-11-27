@@ -28,7 +28,7 @@ public class WishService {
     private final AccommodationRepository accommodationRepository;
     private final MemberRepository memberRepository;
 
-    public void saveWish(Long accommodationId, LoginInfo loginInfo) {
+    public Long saveWish(Long accommodationId, LoginInfo loginInfo) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
                 .orElseThrow(AccommodationNotFoundException::new);
 
@@ -42,15 +42,16 @@ public class WishService {
                 .accommodation(accommodation)
                 .member(member).build();
 
-        wishRepository.save(wish);
+        Wish saved = wishRepository.save(wish);
         accommodation.plusWishCount();
+        return saved.getId();
     }
 
     private boolean isAlreadyWish(Accommodation accommodation, Member member) {
         return wishRepository.findByMemberAndAccommodation(member, accommodation).isPresent();
     }
 
-    public void deleteWish(Long accommodationId, LoginInfo loginInfo) {
+    public Long deleteWish(Long accommodationId, LoginInfo loginInfo) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
                 .orElseThrow(AccommodationNotFoundException::new);
 
