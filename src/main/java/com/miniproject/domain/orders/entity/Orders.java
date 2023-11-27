@@ -43,13 +43,22 @@ public class Orders {
     private List<RoomInOrders> roomInOrders  = new ArrayList<>();
 
     @Builder
-    public Orders(LocalDateTime orderAt, int totalPrice, int totalCount,
-        Member member,List<RoomInOrders> roomInOrders) {
+    public Orders(Long id,LocalDateTime orderAt, int totalPrice, int totalCount,
+        Member member) {
+        this.id = id;
         this.orderAt = orderAt;
         this.totalPrice = totalPrice;
         this.totalCount = totalCount;
         this.member = member;
-        this.roomInOrders = roomInOrders;
         this.orderAt = LocalDateTime.now();
+    }
+
+    public void registerRooms(RoomInOrders roomInOrders) {
+        this.roomInOrders.add(roomInOrders);
+    }
+    public void registerRooms(List<RoomInOrders> roomInOrders) {
+        for (RoomInOrders roomInOrder : roomInOrders) {
+            this.roomInOrders.add(roomInOrder);
+        }
     }
 }
