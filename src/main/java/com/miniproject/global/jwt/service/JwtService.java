@@ -5,6 +5,7 @@ import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.member.request.LoginResponse;
 import com.miniproject.domain.refresh.entity.RefreshToken;
 import com.miniproject.domain.refresh.repository.RefreshTokenRepository;
+import com.miniproject.global.jwt.exception.BadTokenException;
 import com.miniproject.global.security.jwt.JwtPair;
 import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.jwt.JwtProvider;
@@ -58,18 +59,22 @@ public class JwtService {
         return jwtProvider.verifyToken(token);
     }
 
+    public void deleteRefreshToken(String email) {
+        refreshTokenRepository.deleteRefreshTokenByMemberEmail(email);
+    }
+
     public JwtPair refreshAccessToken(RefreshTokenRequest request) {
 
         //요청에 포함된 리프레시 토큰을 검증 후 payload 가져옴
         JwtPayload jwtPayload = verifyToken(request.refreshToken());
         
         //DB에 저장된 member의 리프레시 토큰을 꺼내옴
-        var refreshtoken = refreshTokenRepository.findRefreshTokenByMemberEmail(jwtPayload.email());
+        var refreshToken = refreshTokenRepository.findRefreshTokenByMemberEmail(jwtPayload.email());
 
-        String savedTokenInfo = refreshtoken.getToken();
+        String savedTokenInfo = refreshToken.getToken();
         //같은지 비교
         if (!isAcceptable(savedTokenInfo, request.refreshToken())) {
-            throw new RuntimeException("적절치 않은 RefreshToken 입니다.");
+            throw new BadTokenException("적절치 않은 RefreshToken 입니다.");
         }
 
         //새로운 액세스 토큰 발급
@@ -85,4 +90,6 @@ public class JwtService {
     private boolean isAcceptable(String one, String other) {
         return one.equals(other);
     }
+
+
 }

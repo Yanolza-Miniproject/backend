@@ -4,7 +4,9 @@ import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.exception.DuplicateEmailException;
 import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.member.request.SignUpRequest;
+import com.miniproject.global.jwt.service.JwtService;
 import com.miniproject.global.resolver.LoginInfo;
+import com.miniproject.global.resolver.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public Long signUp(SignUpRequest request) {
@@ -31,6 +35,7 @@ public class MemberService {
                 .phoneNumber(request.phoneNumber())
                 .build()).getId();
     }
+
     private void validateDuplicateMember(String email) {
         Optional<Member> findMember = memberRepository.findByEmail(email);
         if (findMember.isPresent()) {
@@ -38,7 +43,9 @@ public class MemberService {
         }
     }
 
-    public Optional<Member> test(LoginInfo loginInfo) {
-        return memberRepository.findByEmail(loginInfo.username());
+    public void logout(
+            @SecurityContext LoginInfo loginInfo
+    ) {
+        jwtService.deleteRefreshToken(loginInfo.username());
     }
 }

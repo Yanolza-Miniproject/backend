@@ -38,12 +38,8 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
                                                 HttpServletResponse response)
             throws AuthenticationException {
 
-        log.info("CustomAuthenticationFilter.attemptAuthentication 시작");
         String username = request.getParameter("email");
         String password = request.getParameter("password");
-
-        log.info("userEmail : {}", username);
-        log.info("userpw : {}\n", password);
         return getAuthenticationManager().authenticate(
                 CustomLoginToken.unAuthenticate(username, password));
     }
@@ -51,7 +47,6 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-        log.info("CustomAuthenticationFilter.successfulAuthentication 시작");
         String email = (String) authResult.getPrincipal();
         TokenPair tokenPair = jwtService.createTokenPair(new JwtPayload(email, new Date()));
         response.setHeader(

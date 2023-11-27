@@ -6,14 +6,9 @@ import com.miniproject.global.resolver.LoginInfo;
 import com.miniproject.global.resolver.SecurityContext;
 import com.miniproject.global.util.ResponseDTO;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
 @RequestMapping("/api/v1/members")
 public class MemberController {
 
@@ -28,6 +23,14 @@ public class MemberController {
             @Valid  @RequestBody SignUpRequest request
             ){
         return ResponseDTO.res("가입 성공!", memberService.signUp(request));
+    }
+
+    @PostMapping("/logout")
+    public String logout(
+            @SecurityContext LoginInfo loginInfo
+    ){
+        memberService.logout(loginInfo);
+        return ResponseDTO.res("로그아웃이 완료되었습니다.").getMessage();
     }
 
 }

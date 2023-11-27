@@ -1,5 +1,6 @@
-package com.miniproject.global.jwt.api;
+package com.miniproject.domain.refresh.controller;
 
+import com.miniproject.global.jwt.api.RefreshTokenRequest;
 import com.miniproject.global.security.jwt.JwtPair;
 import com.miniproject.global.jwt.service.JwtService;
 import jakarta.validation.Valid;

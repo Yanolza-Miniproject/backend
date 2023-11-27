@@ -23,9 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("PrincipalDetailService.loadUserByUsername 시작");
-        log.info("userEmail = {}", username);
-        Member member = memberRepository.findByEmail(username).orElseThrow(() -> new IllegalArgumentException("member not found."));
+        Member member = memberRepository.findByEmail(username).orElseThrow(() -> new IllegalArgumentException("member not found"));
 
         return new AccountContext(member.getEmail(), member.getPassword(),
                 Set.of(new SimpleGrantedAuthority("ROLE_USER")));

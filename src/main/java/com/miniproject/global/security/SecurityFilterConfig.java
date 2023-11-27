@@ -21,10 +21,10 @@ public class SecurityFilterConfig {
 
     private final CustomLoginFilter customLoginFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtAuthenticationEntryPoint entryPoint;	// 추가
+    private final JwtAuthenticationEntryPoint entryPoint;
 
-
-    public SecurityFilterConfig(CustomLoginFilter customLoginFilter, JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint entryPoint) {
+    public SecurityFilterConfig(CustomLoginFilter customLoginFilter, JwtAuthenticationFilter jwtAuthenticationFilter,
+                                JwtAuthenticationEntryPoint entryPoint) {
         this.customLoginFilter = customLoginFilter;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.entryPoint = entryPoint;
@@ -40,26 +40,16 @@ public class SecurityFilterConfig {
                 .sessionManagement(sessionConfig ->
                         sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-//
-//        http.authorizeHttpRequests(request ->
-//                request
-//                        .requestMatchers("/api/v1/accommodations", "/api/v1/accommodations/**").permitAll()
-//                        .requestMatchers("/api/v1/members/join", "/api/v1/members/login", "/api/v1/refresh").permitAll()
-//                        .requestMatchers("/api/v1/rooms", "/api/v1/rooms/**").permitAll()
-//                        .requestMatchers("/api/v1/rooms/{room_id}/orders").authenticated()
-//                        .anyRequest().authenticated()
-//        );
 
-//        http.authorizeHttpRequests(request ->
-//                request
-//                        .requestMatchers("/api/v1/accommodations", "/api/v1/accommodations/**").permitAll()
-//                        .requestMatchers("/api/v1/members/join", "/api/v1/members/login", "/api/v1/refresh").permitAll()
-//                        .requestMatchers("/api/v1/rooms", "/api/v1/rooms/**").permitAll()
-//                        .requestMatchers("/api/v1/rooms/{room_id}/orders").authenticated()
-//                        .anyRequest().authenticated()
-//        );
+        http.authorizeHttpRequests(request ->
+                request
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/accommodations"), new AntPathRequestMatcher("/api/v1/accommodations/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/members/join"), new AntPathRequestMatcher("/api/v1/members/login", "/api/v1/refresh")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/rooms"), new AntPathRequestMatcher("/api/v1/rooms/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/rooms/{room_id}/orders")).authenticated()
+                        .anyRequest().authenticated()
+        );
 
-      //  http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
         http.addFilterAfter(customLoginFilter, JwtAuthenticationFilter.class);
 
@@ -80,18 +70,4 @@ public class SecurityFilterConfig {
                 .requestMatchers(new AntPathRequestMatcher( "/lib/**"));
     }
 
-
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return web ->
-//                web.ignoring()
-//                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-//                        .requestMatchers("/favicon.ico", "/resources/**", "/error");
-////                        .requestMatchers(new AntPathRequestMatcher("/favicon.ico"))
-////                        .requestMatchers(new AntPathRequestMatcher("/css/**"))
-////                        .requestMatchers(new AntPathRequestMatcher("/js/**"))
-////                        .requestMatchers(new AntPathRequestMatcher("/img/**"))
-////                        .requestMatchers(new AntPathRequestMatcher("/lib/**"));
-//
-//    }
 }

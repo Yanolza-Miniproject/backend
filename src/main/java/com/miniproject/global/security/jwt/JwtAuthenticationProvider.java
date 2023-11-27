@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
@@ -24,18 +23,10 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
-        log.info("JwtAuthenticationProvider.authenticate 시작");
         String accessToken = (String) authentication.getCredentials();
-        log.info("accessToken = {}", accessToken);
-
         JwtPayload jwtPayload = jwtService.verifyToken(accessToken);
         return JwtAuthenticationToken.authorize(jwtPayload.email());
 
-//        try{
-//        } catch (AuthenticationException e) {
-//            log.error("에러캐치");
-//            throw new BadTokenException(e.getMessage());
-//        }
     }
 
     @Override

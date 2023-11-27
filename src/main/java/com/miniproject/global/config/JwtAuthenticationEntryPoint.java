@@ -12,17 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.info("JwtAuthenticationEntryPoint.commence 시작");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         String errorMessage;
@@ -37,14 +33,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             log.error("Request Uri : {}", request.getRequestURI());
             errorMessage = "토큰 기간이 만료되었습니다. ";
 
-        } else if (authException instanceof BadCredentialsException){
+        } else if (authException instanceof BadCredentialsException) {
             log.error("BadCredentialsException", authException);
             log.error("Request Uri : {}", request.getRequestURI());
             errorMessage = "비밀번호가 맞지 않습니다. ";
-
         } else {
-            errorMessage = "Invalid token: " + authException.getMessage();
+            errorMessage = "유효하지 않은 입력입니다. ";
         }
+
         ResponseDTO<?> responseBody = ResponseDTO.res(errorMessage);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(responseBody.getMessage());
