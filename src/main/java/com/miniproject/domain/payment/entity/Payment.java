@@ -25,8 +25,6 @@ public class Payment {
 
     private LocalDateTime paymentAt;
 
-
-
     private PaymentStatus paymentStatus;
     @OneToOne
     @JoinColumn(name = "order_id")
@@ -37,7 +35,8 @@ public class Payment {
     private Member member;
 
     @Builder
-    public Payment(Orders orders,Member member) {
+    public Payment(Long id, Orders orders,Member member) {
+        this.id = id;
         this.member = member;
         this.orders = orders;
         this.paymentStatus = PaymentStatus.PAYING;
