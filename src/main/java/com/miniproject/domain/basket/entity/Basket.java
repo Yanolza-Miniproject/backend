@@ -41,9 +41,16 @@ public class Basket {
         this.totalCount = 0;
         this.member = member;
     }
+    public Basket(Member member){
+        this.totalPrice = 0;
+        this.totalCount = 0;
+        this.member = member;
+    }
+
 
 
     public void RegisterRoom(RoomInBasket roomInBasket) {
+        this.rooms.add(roomInBasket);
         this.totalPrice += roomInBasket.getRoom().getPrice();
         this.totalCount +=1;
     }
