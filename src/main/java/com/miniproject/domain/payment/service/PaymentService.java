@@ -10,6 +10,7 @@ import com.miniproject.domain.payment.exception.PaymentNotFoundException;
 import com.miniproject.domain.payment.repository.PaymentRepository;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomInBasket;
+import com.miniproject.domain.room.entity.RoomInOrders;
 import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final BasketService basketService;
     private final RoomInBasketRepository roomInBasketRepository;
 
     public PaymentResponseDto getPayment(Long paymentId,Member member) {
@@ -47,31 +47,21 @@ public class PaymentService {
     public void completePayment(Long paymentId, Member member){
         Payment payment = getPaymentForException(paymentId, member);
         payment.completePayment();
-        Basket activateBasket = basketService.getActivateBasket(member);
 
-        List<Room> rooms = payment.getOrders().getRoomInOrders().stream().map(
-            roomInOrders -> roomInOrders.getRoom()).collect(Collectors.toList());
         List<RoomInBasket> roomInBaskets = new ArrayList<>();
-
-        List<RoomInBasket> byBasket = roomInBasketRepository.findByBasket(activateBasket);
-        for (RoomInBasket roomInBasket : byBasket) {
-            if (rooms.contains(roomInBasket.getRoom())) {
-                roomInBaskets.add(roomInBasket);
+        List<RoomInOrders> roomInOrders = payment.getOrders().getRoomInOrders();
+        for (RoomInOrders roomInOrder : roomInOrders) {
+            if (roomInOrder.getRoomInBasket() != null) {
+                roomInBaskets.add(roomInOrder.getRoomInBasket());
             }
         }
         roomInBasketRepository.deleteAll(roomInBaskets);
     }
 
-    public void deletePayment(Long paymentId, Member member) {
-        Payment payment = getPaymentForException(paymentId, member);
-        paymentRepository.delete(payment);
-
-    }
-
-    private Payment getPaymentForException(Long paymentId, Member member) {
+    public Payment getPaymentForException(Long paymentId, Member member) {
         Payment payment = paymentRepository.findById(paymentId)
             .orElseThrow(PaymentNotFoundException::new);
-        if(!member.equals(payment.getOrders().getMember())){
+        if(!member.getId().equals(payment.getOrders().getMember().getId())){
             throw new MemberUnAuthorizedException();
         }
         return payment;

@@ -8,8 +8,6 @@ import com.miniproject.domain.orders.exception.OrdersNotFoundException;
 import com.miniproject.domain.orders.repository.OrdersRepository;
 import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.payment.repository.PaymentRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,10 +43,10 @@ public class OrdersService {
 
     }
 
-    private Orders getOrders(Long orderId, Member member) {
+    public Orders getOrders(Long orderId, Member member) {
         Orders orders = ordersRepository.findById(orderId)
             .orElseThrow(OrdersNotFoundException::new);
-        if (!member.equals(orders.getMember())) {
+        if (!member.getId().equals(orders.getMember().getId())) {
             throw new MemberUnAuthorizedException();
         }
         return orders;

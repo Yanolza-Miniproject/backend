@@ -75,9 +75,11 @@ public class BasketService {
                 .room(roomInBasket.getRoom())
                 .member(member)
                 .orders(save)
+                .roomInBasket(roomInBasket)
                 .build();
             roomInOrdersList.add(roomInOrders);
         }
+        save.registerRooms(roomInOrdersList);
         roomInOrdersRepository.saveAll(roomInOrdersList);
         return save.getId();
     }
@@ -88,7 +90,7 @@ public class BasketService {
         List<Basket> nowBasket = basketRepository.findByMember(member);
         Basket basket = switch (nowBasket.size()) {
             case 1 -> nowBasket.get(0);
-            case 0 -> new Basket();
+            case 0 -> basketRepository.save(new Basket(member));
             default -> throw new BasketDuplicateActivateException();
         };
         return basket;
