@@ -1,7 +1,6 @@
 package com.miniproject.domain.room.service;
 
 import com.miniproject.domain.basket.entity.Basket;
-import com.miniproject.domain.basket.exception.BasketEmptyException;
 import com.miniproject.domain.basket.service.BasketService;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.orders.entity.Orders;
@@ -10,14 +9,12 @@ import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomInBasket;
 import com.miniproject.domain.room.entity.RoomInOrders;
-import com.miniproject.domain.room.exception.RoomInBasketNotFoundException;
 import com.miniproject.domain.room.exception.RoomNotFoundException;
 import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import com.miniproject.domain.room.repository.RoomInOrdersRepository;
 import com.miniproject.domain.room.repository.RoomRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +62,7 @@ public class RoomService {
             .member(member)
             .orders(save)
             .build();
+        save.registerRooms(roomInOrders);
         roomInOrdersRepository.save(roomInOrders);
         return save.getId();
     }
