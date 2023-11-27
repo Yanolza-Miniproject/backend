@@ -19,7 +19,7 @@ public class Accommodation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
     @Column
@@ -51,8 +51,23 @@ public class Accommodation {
     @Column
     private LocalDateTime checkOut;
     @Column
-    private int likeCount;
+    private int wishCount;
     @Column
     private int viewCount;
+    @Column
+    private boolean isWish;
+
+    public void plusViewCount() {
+        this.viewCount = this.viewCount + 1;
+    }
+
+    public void plusWishCount() {
+        this.wishCount = this.wishCount + 1;
+    }
+
+    public void minusWishCount() {
+        this.wishCount = this.wishCount - 1;
+    }
+
 
 }
