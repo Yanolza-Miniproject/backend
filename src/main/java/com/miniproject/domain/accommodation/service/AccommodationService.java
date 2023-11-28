@@ -72,9 +72,9 @@ public class AccommodationService {
                 .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
 
         // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
-        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(member);
+        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
 
-        return accommodations.map(accommodation -> {
+        return result.map(accommodation -> {
             Integer lowestPrice = accommodation.getRooms().stream()
                     .map(Room::getPrice)
                     .min(Integer::compare)

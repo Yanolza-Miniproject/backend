@@ -24,11 +24,12 @@ public class AccommodationController {
 
     private final AccommodationService accommodationService;
 
+
     // 숙소 단일 조회
     @GetMapping("/{accommodationId}")
     public ResponseEntity<ResponseDTO<AccommodationDetailResponse>> getAccommodation(@PathVariable Long accommodationId, @SecurityContext LoginInfo loginInfo) {
         return ResponseEntity.ok(
-                ResponseDTO.res("성공", accommodationService.getAccommodationWithRoomById(accommodationId))
+                ResponseDTO.res("성공", accommodationService.getAccommodationWithRoomById(accommodationId, loginInfo))
         );
     }
 
@@ -56,7 +57,8 @@ public class AccommodationController {
                         categoryCooking,
                         categoryPickup,
                         wishCount,
-                        region01);
+                        region01,
+                        loginInfo);
 
         List<AccommodationSimpleResponse> accommodationList = accommodationPage.getContent();
 
