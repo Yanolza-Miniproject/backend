@@ -8,6 +8,7 @@ public enum ErrorCode {
     //사용자
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     //숙소
+    ACCOOMMODATION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 숙소입니다."),
 
     //객실
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다."),

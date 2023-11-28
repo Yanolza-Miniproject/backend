@@ -4,6 +4,7 @@ import com.miniproject.domain.room.dto.response.RoomDetailResponse;
 import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomInventory;
+import com.miniproject.domain.room.exception.RoomNotFoundException;
 import com.miniproject.domain.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public class RoomService {
     public RoomDetailResponse getRoomById(Long roomId) {
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow();
+                .orElseThrow(RoomNotFoundException::new);
 
         return RoomDetailResponse.fromEntity(room);
     }
