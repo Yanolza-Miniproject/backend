@@ -2,6 +2,7 @@ package com.miniproject.domain.member.service;
 
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.exception.DuplicateEmailException;
+import com.miniproject.domain.member.exception.MemberNotFoundException;
 import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.member.request.SignUpRequest;
 import com.miniproject.global.jwt.service.JwtService;
@@ -34,6 +35,12 @@ public class MemberService {
                 .nickname(request.nickname())
                 .phoneNumber(request.phoneNumber())
                 .build()).getId();
+    }
+
+    public Member getMemberByLoginInfo(
+            @SecurityContext LoginInfo loginInfo
+            ){
+        return memberRepository.findByEmail(loginInfo.username()).orElseThrow(MemberNotFoundException::new);
     }
 
     private void validateDuplicateMember(String email) {
