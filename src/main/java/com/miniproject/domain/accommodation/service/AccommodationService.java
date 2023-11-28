@@ -6,8 +6,6 @@ import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
-import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.wish.service.WishService;
 import com.miniproject.global.resolver.LoginInfo;
@@ -26,7 +24,6 @@ import java.util.List;
 public class AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
-    private final MemberService memberService;
     private final WishService wishService;
 
     @Transactional
@@ -88,9 +85,5 @@ public class AccommodationService {
             // AccommodationSimpleResponse 객체를 생성하면서 lowest_price 값을 설정
             return AccommodationSimpleResponse.fromEntity(accommodation, lowestPrice, isWished);
         });
-
-
     }
-
-
 }

@@ -33,7 +33,6 @@ public class AccommodationController {
         );
     }
 
-
     // 숙소 전체 조회 + 필터링
     // 주차, 조리, 픽업, 지역(일단 도, 특별시 기준)
     @GetMapping
@@ -65,13 +64,5 @@ public class AccommodationController {
         return ResponseEntity.ok(
                 ResponseDTO.res("성공", accommodationList)
         );
-
     }
-
-
-
-
-
-
-
 }

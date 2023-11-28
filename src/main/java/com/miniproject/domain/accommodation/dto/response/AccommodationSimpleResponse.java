@@ -1,11 +1,8 @@
 package com.miniproject.domain.accommodation.dto.response;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
-import com.miniproject.domain.accommodation.entity.AccommodationType;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Builder
