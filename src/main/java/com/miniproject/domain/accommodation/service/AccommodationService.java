@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -39,11 +40,14 @@ public class AccommodationService {
                 .min(Integer::compare)
                 .orElse(null);
 
-        // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
-        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
         boolean isWished = false;
-        if (likedAccommodationIds.contains(accommodation.getId())) {
-            isWished = true;
+
+        if(loginInfo.username() != "anonymousUser") {
+            // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
+            List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+            if (likedAccommodationIds.contains(accommodation.getId())) {
+                isWished = true;
+            }
         }
 
         return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
@@ -68,8 +72,14 @@ public class AccommodationService {
         Page<Accommodation> result = accommodationRepository
                 .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
 
-        // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
-        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+        List<Long> likedAccommodationIds;
+
+        if(loginInfo.username() != "anonymousUser") {
+            likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+        } else {
+            likedAccommodationIds = new ArrayList<>();
+        }
+
 
         return result.map(accommodation -> {
             Integer lowestPrice = accommodation.getRooms().stream()
@@ -77,8 +87,10 @@ public class AccommodationService {
                     .min(Integer::compare)
                     .orElse(null);
 
+
             boolean isWished = false;
-            if (likedAccommodationIds.contains(accommodation.getId())) {
+
+            if (loginInfo.username() != "anonymousUser" && likedAccommodationIds.contains(accommodation.getId())) {
                 isWished = true;
             }
 

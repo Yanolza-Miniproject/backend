@@ -27,7 +27,9 @@ public class AccommodationController {
 
     // 숙소 단일 조회
     @GetMapping("/{accommodationId}")
-    public ResponseEntity<ResponseDTO<AccommodationDetailResponse>> getAccommodation(@PathVariable Long accommodationId, @SecurityContext LoginInfo loginInfo) {
+    public ResponseEntity<ResponseDTO<AccommodationDetailResponse>> getAccommodation(@PathVariable Long accommodationId,
+                                                                                     @SecurityContext LoginInfo loginInfo) {
+        log.info(loginInfo.username());
         return ResponseEntity.ok(
                 ResponseDTO.res("성공", accommodationService.getAccommodationWithRoomById(accommodationId, loginInfo))
         );

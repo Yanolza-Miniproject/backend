@@ -3,8 +3,8 @@ package com.miniproject.domain.accommodation.entity;
 import com.miniproject.domain.room.entity.Room;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -57,6 +57,7 @@ public class Accommodation {
     @Column
     private int viewCount;
     @Column
+    @ColumnDefault("FALSE")
     private boolean isWish;
 
     public void plusViewCount() {
