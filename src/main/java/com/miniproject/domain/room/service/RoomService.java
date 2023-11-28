@@ -24,7 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
+
 @Service
 @RequiredArgsConstructor
 public class RoomService {
@@ -73,6 +73,7 @@ public class RoomService {
         save.registerRooms(roomInOrders);
         roomInOrdersRepository.save(roomInOrders);
         return save.getId();
+    }
 
     @Transactional
     public RoomDetailResponse getRoomById(Long roomId) {
