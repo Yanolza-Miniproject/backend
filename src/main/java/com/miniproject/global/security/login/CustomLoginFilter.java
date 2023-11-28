@@ -3,6 +3,7 @@ package com.miniproject.global.security.login;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miniproject.domain.member.repository.MemberRepository;
+import com.miniproject.domain.member.request.LoginRequest;
 import com.miniproject.domain.member.request.LoginResponse;
 import com.miniproject.global.config.CustomHttpHeaders;
 import com.miniproject.global.jwt.JwtPayload;
@@ -20,6 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 @Slf4j
@@ -36,10 +38,15 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response)
-            throws AuthenticationException {
+            throws AuthenticationException, IOException {
 
-        String username = request.getParameter("email");
-        String password = request.getParameter("password");
+        InputStream inputStream = request.getInputStream();
+        ObjectMapper objectMapper = new ObjectMapper();
+        LoginRequest loginRequest = objectMapper.readValue(inputStream, LoginRequest.class);
+
+        String username = loginRequest.email();
+        String password = loginRequest.password();
+
         return getAuthenticationManager().authenticate(
                 CustomLoginToken.unAuthenticate(username, password));
     }
