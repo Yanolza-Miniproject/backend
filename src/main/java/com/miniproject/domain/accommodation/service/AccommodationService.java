@@ -6,13 +6,17 @@ import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
+import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.room.entity.Room;
+import com.miniproject.domain.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,7 +38,14 @@ public class AccommodationService {
                 .min(Integer::compare)
                 .orElse(null);
 
-        return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice);
+        // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
+        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(member);
+        boolean isWished = false;
+        if(likedAccommodationIds.contains(accommodation.getId())) {
+            isWished = true;
+        }
+
+        return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
     }
 
     // 동적 쿼리가 필요한 기능이므로 querydsl 사용이 추천됨
@@ -55,12 +66,22 @@ public class AccommodationService {
         Page<Accommodation> result = accommodationRepository
                 .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
 
-        return result.map(accommodation -> {
+        // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
+        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(member);
+
+        return accommodations.map(accommodation -> {
             Integer lowestPrice = accommodation.getRooms().stream()
                     .map(Room::getPrice)
                     .min(Integer::compare)
                     .orElse(null);
-            return AccommodationSimpleResponse.fromEntity(accommodation, lowestPrice);
+
+            boolean isWished = false;
+            if(likedAccommodationIds.contains(accommodation.getId())) {
+                isWished = true;
+            }
+
+            // AccommodationSimpleResponse 객체를 생성하면서 lowest_price 값을 설정
+            return AccommodationSimpleResponse.fromEntity(accommodation, lowestPrice, isWished);
         });
 
 

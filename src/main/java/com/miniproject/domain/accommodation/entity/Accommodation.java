@@ -56,9 +56,19 @@ public class Accommodation {
     private int wishCount;
     @Column
     private int viewCount;
+    @Column
+    private boolean isWish;
 
     public void plusViewCount() {
         this.viewCount = this.viewCount + 1;
+    }
+
+    public void plusWishCount() {
+        this.wishCount = this.wishCount + 1;
+    }
+
+    public void minusWishCount() {
+        this.wishCount = this.wishCount - 1;
     }
 
 

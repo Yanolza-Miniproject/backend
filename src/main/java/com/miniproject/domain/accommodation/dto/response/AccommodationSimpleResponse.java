@@ -26,12 +26,13 @@ public record AccommodationSimpleResponse(
         String checkIn,
         String checkOut,
         Integer wishCount,
+        Boolean isWish,
         Integer lowest_price,
         Integer viewCount
 
 ) {
 
-    public static AccommodationSimpleResponse fromEntity(Accommodation entity, Integer lowestPrice) {
+    public static AccommodationSimpleResponse fromEntity(Accommodation entity) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String formattedCheckIn = entity.getCheckIn().format(formatter);
@@ -55,6 +56,30 @@ public record AccommodationSimpleResponse(
                 .checkOut(formattedCheckOut)
                 .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
+                .build();
+    }
+
+    public static AccommodationSimpleResponse fromEntity(Accommodation entity, Integer lowestPrice, boolean isWish) {
+
+        return AccommodationSimpleResponse.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .type(entity.getType())
+                .address(entity.getAddress())
+                .phoneNumber(entity.getPhoneNumber())
+                .homepage(entity.getHomepage())
+                .infoDetail(entity.getInfoDetail())
+                .thumbnailUrl(entity.getThumbnailUrl())
+                .categoryParking(entity.isCategoryParking())
+                .categoryCooking(entity.isCategoryCooking())
+                .categoryPickup(entity.isCategoryPickup())
+                .categoryAmenities(entity.isCategoryAmenities())
+                .categoryDiningArea(entity.isCategoryDiningArea())
+                .checkIn(entity.getCheckIn())
+                .checkOut(entity.getCheckOut())
+                .wishCount(entity.getWishCount())
+                .viewCount(entity.getViewCount())
+                .isWish(isWish)
                 .lowest_price(lowestPrice)
                 .build();
     }

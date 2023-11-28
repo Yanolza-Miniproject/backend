@@ -30,13 +30,14 @@ public record AccommodationDetailResponse(
         String checkOut,
         Integer wishCount,
         Integer viewCount,
+        Boolean isWish,
         Integer lowest_price,
         List<RoomDTO> rooms
 
 
 ) {
 
-    public static AccommodationDetailResponse formEntity(Accommodation entity, Integer lowestPrice) {
+    public static AccommodationDetailResponse formEntity(Accommodation entity, Integer lowestPrice, boolean isWish) {
 
         List<Room> rooms = entity.getRooms();
         List<RoomDTO> roomDTOs = rooms.stream()
@@ -65,6 +66,7 @@ public record AccommodationDetailResponse(
                 .checkOut(formattedCheckOut)
                 .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
+                .isWish(isWish)
                 .lowest_price(lowestPrice)
                 .rooms(roomDTOs)
                 .build();
