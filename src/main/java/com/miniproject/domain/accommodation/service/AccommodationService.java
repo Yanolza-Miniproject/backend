@@ -29,8 +29,8 @@ public class AccommodationService {
             .id(1L)
             .email("member1@example.com")
             .password("1234")
-            .name("테스트")
-            .number("010-000-2222")
+            .nickname("테스트")
+            .phoneNumber("010-000-2222")
             .build();
 
     @Transactional
