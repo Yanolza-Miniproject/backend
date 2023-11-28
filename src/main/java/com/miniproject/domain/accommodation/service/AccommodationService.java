@@ -3,6 +3,8 @@ package com.miniproject.domain.accommodation.service;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
+import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.room.entity.Room;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ public class AccommodationService {
     public AccommodationDetailResponse getAccommodationWithRoomById(Long accommodationId) {
 
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow();
+                .orElseThrow(AccommodationNotFoundException::new);
 
         accommodation.plusViewCount();
 
@@ -42,22 +44,21 @@ public class AccommodationService {
                                                                Integer categoryCooking,
                                                                Integer categoryPickup,
                                                                Integer wishCount,
-                                                               String region01) {
+                                                               Integer region01) {
+
+        String region = AccommodationRegionType.findByValue(region01).getDescription();
 
         Page<Accommodation> result = accommodationRepository
-                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region01);
+                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
 
         return result.map(accommodation -> {
             Integer lowestPrice = accommodation.getRooms().stream()
                     .map(Room::getPrice)
                     .min(Integer::compare)
                     .orElse(null);
-            // AccommodationSimpleResponse 객체를 생성하면서 lowest_price 값을 설정
             return AccommodationSimpleResponse.fromEntity(accommodation, lowestPrice);
         });
 
-
-//        return result.map(AccommodationSimpleResponse::fromEntity);
 
     }
 

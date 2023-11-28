@@ -2,6 +2,7 @@ package com.miniproject.domain.room.repository;
 
 import com.miniproject.domain.room.entity.QRoom;
 import com.miniproject.domain.room.entity.Room;
+import com.miniproject.domain.room.exception.RoomNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import org.springframework.data.domain.Page;
@@ -46,12 +47,16 @@ public class RoomRepositoryImpl extends QuerydslRepositorySupport implements Roo
             booleanBuilder.and(room.categoryDryer.isTrue());
         }
 
+
         QueryResults<Room> result = from(room)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
+        if(result.getResults().isEmpty()) {
+            throw new RoomNotFoundException();
+        }
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
