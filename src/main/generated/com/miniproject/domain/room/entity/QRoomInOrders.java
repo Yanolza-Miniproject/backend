@@ -22,9 +22,9 @@ public class QRoomInOrders extends EntityPathBase<RoomInOrders> {
 
     public static final QRoomInOrders roomInOrders = new QRoomInOrders("roomInOrders");
 
-    public final DateTimePath<java.time.LocalDateTime> checkInAt = createDateTime("checkInAt", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> checkInAt = createDate("checkInAt", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> checkOutAt = createDateTime("checkOutAt", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> checkOutAt = createDate("checkOutAt", java.time.LocalDate.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
