@@ -3,10 +3,10 @@ package com.miniproject.domain.member.exception;
 import com.miniproject.global.exception.ApplicationException;
 import com.miniproject.global.exception.ErrorCode;
 
-public class MemberNotFoundException extends ApplicationException {
-    private static final ErrorCode errorCode = ErrorCode.MEMBER_NOT_FOUND;
+public class DuplicateEmailException extends ApplicationException {
+    private static final ErrorCode errorCode = ErrorCode.DUPLICATE_EMAIL;
 
-    public MemberNotFoundException(){
+    public DuplicateEmailException(){
         super(errorCode);
     }
 }
