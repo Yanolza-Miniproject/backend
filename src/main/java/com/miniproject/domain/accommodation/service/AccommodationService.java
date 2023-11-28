@@ -46,7 +46,11 @@ public class AccommodationService {
                                                                Integer wishCount,
                                                                Integer region01) {
 
-        String region = AccommodationRegionType.findByValue(region01).getDescription();
+        String region = null;
+
+        if (region01 != null) {
+            region = AccommodationRegionType.findByValue(region01).getDescription();
+        }
 
         Page<Accommodation> result = accommodationRepository
                 .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
