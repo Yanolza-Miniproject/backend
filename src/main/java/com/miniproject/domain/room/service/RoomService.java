@@ -1,26 +1,10 @@
 package com.miniproject.domain.room.service;
 
-import com.miniproject.domain.basket.entity.Basket;
-import com.miniproject.domain.basket.service.BasketService;
-import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.orders.entity.Orders;
-import com.miniproject.domain.orders.repository.OrdersRepository;
-import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
-import com.miniproject.domain.room.entity.Room;
-import com.miniproject.domain.room.entity.RoomInBasket;
-import com.miniproject.domain.room.entity.RoomInOrders;
-import com.miniproject.domain.room.exception.RoomNotFoundException;
-import com.miniproject.domain.room.repository.RoomInBasketRepository;
-import com.miniproject.domain.room.repository.RoomInOrdersRepository;
-import com.miniproject.domain.room.repository.RoomRepository;
-import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@Transactional
 @RequiredArgsConstructor
+@Service
 public class RoomService {
 
     private final RoomRepository roomRepository;
@@ -29,6 +13,41 @@ public class RoomService {
     private final OrdersRepository ordersRepository;
     private final RoomInOrdersRepository roomInOrdersRepository;
 
+    @Transactional
+    public RoomDetailResponse getRoomById(Long roomId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow();
+
+        return RoomDetailResponse.fromEntity(room);
+    }
+
+    @Transactional
+    public Page<RoomDetailResponse> getRoomsByAccommodationId(Long accommodationId,
+                                                              Pageable pageable,
+                                                              Integer categoryTv,
+                                                              Integer categoryPc,
+                                                              Integer categoryInternet,
+                                                              Integer categoryRefrigerator,
+                                                              Integer categoryBathingFacilities,
+                                                              Integer categoryDryer) {
+        Page<Room> result = roomRepository
+                .findByAccommodationIdAndCategory(
+                        accommodationId,
+                        pageable,
+                        categoryTv,
+                        categoryPc,
+                        categoryInternet,
+                        categoryRefrigerator,
+                        categoryBathingFacilities,
+                        categoryDryer);
+
+        return result.map(RoomDetailResponse::fromEntity);
+
+    }
+
+
+    @Transactional
     public RoomInBasket creatRoomInBasket(Long roomId, RoomRegisterRequestDto dto, Member member){
         Room room = roomRepository.findById(roomId).orElseThrow(
                 RoomNotFoundException::new);
@@ -45,6 +64,7 @@ public class RoomService {
         return roomInBasketRepository.save(roomInBasket);
     }
 
+    @Transactional
     public Long createSingleOrders(Long roomId, RoomRegisterRequestDto dto,Member member) {
         Room room = roomRepository.findById(roomId).orElseThrow(
             RoomNotFoundException::new);
