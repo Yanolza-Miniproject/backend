@@ -36,8 +36,6 @@ public class QRoomInOrders extends EntityPathBase<RoomInOrders> {
 
     public final QRoom room;
 
-    public final QRoomInBasket roomInBasket;
-
     public QRoomInOrders(String variable) {
         this(RoomInOrders.class, forVariable(variable), INITS);
     }
@@ -59,7 +57,6 @@ public class QRoomInOrders extends EntityPathBase<RoomInOrders> {
         this.member = inits.isInitialized("member") ? new com.miniproject.domain.member.entity.QMember(forProperty("member")) : null;
         this.orders = inits.isInitialized("orders") ? new com.miniproject.domain.orders.entity.QOrders(forProperty("orders"), inits.get("orders")) : null;
         this.room = inits.isInitialized("room") ? new QRoom(forProperty("room"), inits.get("room")) : null;
-        this.roomInBasket = inits.isInitialized("roomInBasket") ? new QRoomInBasket(forProperty("roomInBasket"), inits.get("roomInBasket")) : null;
     }
 
 }
