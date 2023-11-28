@@ -42,7 +42,7 @@ public class PaymentServiceTest {
     public void getPaymentForException_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Orders orders = Orders.builder()
             .id(1L)
@@ -70,7 +70,7 @@ public class PaymentServiceTest {
     public void getPayment_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Orders orders = Orders.builder()
             .id(1L)
@@ -100,7 +100,7 @@ public class PaymentServiceTest {
     public void getPayments_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Orders orders = Orders.builder()
             .id(1L)

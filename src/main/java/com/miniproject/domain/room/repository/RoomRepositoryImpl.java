@@ -47,7 +47,6 @@ public class RoomRepositoryImpl extends QuerydslRepositorySupport implements Roo
             booleanBuilder.and(room.categoryDryer.isTrue());
         }
 
-
         QueryResults<Room> result = from(room)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())

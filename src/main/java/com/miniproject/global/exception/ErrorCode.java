@@ -13,7 +13,7 @@ public enum ErrorCode {
     ACCOOMMODATION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 숙소입니다."),
 
     //객실
-    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다.");
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다."),
     //장바구니 상품
     ROOM_IN_BASKET_NOT_FOUND(HttpStatus.NOT_FOUND,"장바구니에 담겨있지 않은 객실입니다."),
     //장바구니
@@ -24,7 +24,7 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),
 
     //결제
-    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 결제입니다.");
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 결제입니다."),
     //좋아요
     ALREADY_WISH(HttpStatus.BAD_REQUEST, "이미 좋아요를 누른 상태입니다."),
     WISH_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 좋아요는 존재하지 않습니다.");

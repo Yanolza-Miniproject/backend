@@ -1,6 +1,7 @@
 package com.miniproject.domain.room.dto.response;
 
 import com.miniproject.domain.room.entity.RoomInBasket;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,8 +19,8 @@ public class RoomInBasketGetResponseDto {
     String roomName;
     int price;
     int numberOfGuests;
-    LocalDateTime checkInAt;
-    LocalDateTime checkOutAt;
+    LocalDate checkInAt;
+    LocalDate checkOutAt;
     String roomUrl;
 
     public RoomInBasketGetResponseDto(RoomInBasket room) {
@@ -30,7 +31,7 @@ public class RoomInBasketGetResponseDto {
         this.numberOfGuests = room.getNumberOfGuests();
         this.checkInAt = room.getCheckInAt();
         this.checkOutAt = room.getCheckOutAt();
-        if (room.getRoom().getRoomImages()!=null) {
+        if (!room.getRoom().getRoomImages().isEmpty()) {
             this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
         }
     }
@@ -38,7 +39,7 @@ public class RoomInBasketGetResponseDto {
     @Builder
     public RoomInBasketGetResponseDto(Long id, String accommodationName,
         String roomName, int price, int numberOfGuests,
-        LocalDateTime checkInAt, LocalDateTime checkOutAt, String roomUrl) {
+        LocalDate checkInAt, LocalDate checkOutAt, String roomUrl) {
 
         this.id = id;
         this.accommodationName = accommodationName;

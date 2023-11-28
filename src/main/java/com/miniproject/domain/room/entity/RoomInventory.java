@@ -26,4 +26,11 @@ public class RoomInventory {
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+
+
+    public void minusInventory() {
+        this.inventory = this.inventory - 1;
+    }
+
+
 }

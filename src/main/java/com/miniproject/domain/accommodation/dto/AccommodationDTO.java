@@ -29,7 +29,6 @@ public record AccommodationDTO(
         Integer wishCount,
         Integer viewCount,
         List<RoomDTO> rooms
-
 ) {
     public static AccommodationDTO fromEntity(Accommodation entity) {
 

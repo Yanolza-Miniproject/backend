@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;

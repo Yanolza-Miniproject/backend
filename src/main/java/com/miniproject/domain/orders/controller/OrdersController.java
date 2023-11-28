@@ -41,7 +41,7 @@ public class OrdersController {
 
     }
 
-    @PostMapping("/{orders_id}/payment")
+    @PostMapping("/{orders_id}/payments")
     public ResponseEntity<ResponseDTO> paymentOrder
         (@PathVariable Long orders_id, @SecurityContext LoginInfo loginInfo) {
         Member member = memberService.getMemberByLoginInfo(loginInfo);

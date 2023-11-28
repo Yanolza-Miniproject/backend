@@ -32,7 +32,7 @@ public class BasketResponseDto {
         this.totalPrice = basket.getTotalPrice();
         this.totalCount = basket.getTotalCount();
         this.rooms = basket.getRooms().stream().map(
-                        RoomInBasketGetResponseDto::new)
+                        roomInBasket -> new RoomInBasketGetResponseDto(roomInBasket))
                 .collect(Collectors.toList());
     }
 }

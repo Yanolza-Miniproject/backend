@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,9 +26,9 @@ public class RoomInBasket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime checkInAt;
+    private LocalDate checkInAt;
 
-    private LocalDateTime checkOutAt;
+    private LocalDate checkOutAt;
 
     private int numberOfGuests;
 
@@ -46,7 +47,7 @@ public class RoomInBasket {
 
 
     @Builder
-    public RoomInBasket(Long id, LocalDateTime checkInAt, LocalDateTime checkOutAt,
+    public RoomInBasket(Long id, LocalDate checkInAt, LocalDate checkOutAt,
         int numberOfGuests, Basket basket, Member member, Room room) {
         this.id = id;
         this.checkInAt = checkInAt;

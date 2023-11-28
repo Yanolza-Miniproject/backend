@@ -1,5 +1,6 @@
 package com.miniproject.domain.room.dto.request;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomRegisterRequestDto {
-    LocalDateTime checkInAt;
-    LocalDateTime checkOutAt;
+    LocalDate checkInAt;
+    LocalDate checkOutAt;
     int numberOfGuests;
 }
