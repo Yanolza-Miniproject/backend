@@ -1,4 +1,4 @@
-package com.miniproject.domain.accommodation.exception;
+package com.miniproject.domain.room.exception;
 
 import com.miniproject.global.exception.ApplicationException;
 import com.miniproject.global.exception.ErrorCode;

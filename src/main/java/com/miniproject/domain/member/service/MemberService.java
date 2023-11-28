@@ -37,10 +37,9 @@ public class MemberService {
                 .build()).getId();
     }
 
-    public Member getMemberByLoginInfo(
-            @SecurityContext LoginInfo loginInfo
-            ){
-        return memberRepository.findByEmail(loginInfo.username()).orElseThrow(MemberNotFoundException::new);
+    public Member getMemberByLoginInfo(LoginInfo loginInfo){
+        return memberRepository.findByEmail(loginInfo.username())
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     private void validateDuplicateMember(String email) {

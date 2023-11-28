@@ -2,6 +2,7 @@ package com.miniproject.domain.room.entity;
 
 import com.miniproject.domain.basket.entity.Basket;
 import com.miniproject.domain.member.entity.Member;
+import com.miniproject.domain.orders.entity.Orders;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,12 +16,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomInBasket {
-
+public class RoomInOrders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,8 +31,8 @@ public class RoomInBasket {
     private int numberOfGuests;
 
     @ManyToOne
-    @JoinColumn(name = "basket_id")
-    private Basket basket;
+    @JoinColumn(name = "orders_id")
+    private Orders orders;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -43,18 +42,21 @@ public class RoomInBasket {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @OneToOne
+    @JoinColumn(name = "roomInBasket_id")
+    private RoomInBasket roomInBasket;
 
 
     @Builder
-    public RoomInBasket(Long id, LocalDateTime checkInAt, LocalDateTime checkOutAt,
-        int numberOfGuests, Basket basket, Member member, Room room) {
+    public RoomInOrders(Long id, LocalDateTime checkInAt, LocalDateTime checkOutAt,
+        int numberOfGuests, Orders orders, Member member,Room room,RoomInBasket roomInBasket) {
         this.id = id;
         this.checkInAt = checkInAt;
         this.checkOutAt = checkOutAt;
         this.numberOfGuests = numberOfGuests;
         this.room = room;
-        this.basket = basket;
+        this.orders = orders;
         this.member = member;
+        this.roomInBasket = roomInBasket;
     }
-
 }
