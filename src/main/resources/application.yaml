@@ -20,6 +20,10 @@ spring:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: true
+    properties:
+      hibernate.format_sql: true  # debug query more pretty
+#      hibernate.default_batch_fetch_size: 50 # select complicated query bulk (one of solution n+1)
+
 
 
 service:

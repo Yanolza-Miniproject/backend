@@ -3,6 +3,8 @@ package com.miniproject.domain.accommodation.service;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
+import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.room.entity.Room;
@@ -23,23 +25,12 @@ public class AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
 
-    private final WishService wishService;
-
-    Member member = Member.builder()
-            .id(1L)
-            .email("member1@example.com")
-            .password("1234")
-            .nickname("테스트")
-            .phoneNumber("010-000-2222")
-            .build();
-
     @Transactional
     public AccommodationDetailResponse getAccommodationWithRoomById(Long accommodationId) {
 
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow();
+                .orElseThrow(AccommodationNotFoundException::new);
 
-        // 같은 IP로 반복해서 요청이 들엉오면 제한을 거는 것 고려
         accommodation.plusViewCount();
 
         Integer cheapestRoomPrice = accommodation.getRooms().stream()
@@ -64,10 +55,16 @@ public class AccommodationService {
                                                                Integer categoryCooking,
                                                                Integer categoryPickup,
                                                                Integer wishCount,
-                                                               String region01) {
+                                                               Integer region01) {
 
-        Page<Accommodation> accommodations = accommodationRepository
-                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region01);
+        String region = null;
+
+        if (region01 != null) {
+            region = AccommodationRegionType.findByValue(region01).getDescription();
+        }
+
+        Page<Accommodation> result = accommodationRepository
+                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
 
         // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
         List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(member);
@@ -87,8 +84,6 @@ public class AccommodationService {
             return AccommodationSimpleResponse.fromEntity(accommodation, lowestPrice, isWished);
         });
 
-
-//        return result.map(AccommodationSimpleResponse::fromEntity);
 
     }
 

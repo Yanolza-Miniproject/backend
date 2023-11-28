@@ -24,4 +24,6 @@ public class RoomControllerAdvice {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
             .body(ResponseDTO.res(e.getErrorCode().getMessage()));
     }
+
+
 }

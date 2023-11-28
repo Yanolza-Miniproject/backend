@@ -1,17 +1,19 @@
 package com.miniproject.domain.accommodation.dto;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.room.dto.RoomDTO;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Builder
 public record AccommodationDTO(
         Long id,
         String name,
-        String type,
+        AccommodationType type,
         String address,
         String phoneNumber,
         String homepage,
@@ -20,16 +22,17 @@ public record AccommodationDTO(
         Boolean categoryParking,
         Boolean categoryCooking,
         Boolean categoryPickup,
-        Boolean categoryAmenities,
-        Boolean categoryDiningArea,
-        LocalDateTime checkIn,
-        LocalDateTime checkOut,
+        String categoryAmenities,
+        String categoryDiningArea,
+        LocalTime checkIn,
+        LocalTime checkOut,
         Integer wishCount,
         Integer viewCount,
         List<RoomDTO> rooms
 
 ) {
     public static AccommodationDTO fromEntity(Accommodation entity) {
+
         List<RoomDTO> rooms = entity.getRooms()
                 .stream()
                 .map(RoomDTO::fromEntity)
@@ -48,8 +51,8 @@ public record AccommodationDTO(
                 .categoryParking(entity.isCategoryParking())
                 .categoryCooking(entity.isCategoryCooking())
                 .categoryPickup(entity.isCategoryPickup())
-                .categoryAmenities(entity.isCategoryAmenities())
-                .categoryDiningArea(entity.isCategoryDiningArea())
+                .categoryAmenities(entity.getCategoryAmenities())
+                .categoryDiningArea(entity.getCategoryDiningArea())
                 .checkIn(entity.getCheckIn())
                 .checkOut(entity.getCheckOut())
                 .wishCount(entity.getWishCount())

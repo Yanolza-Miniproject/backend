@@ -10,7 +10,8 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다."),
     MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "잘못된 접근입니다."),
     //숙소
-    ACCOMMODATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 숙소가 존재하지 않습니다."),
+    ACCOOMMODATION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 숙소입니다."),
+
     //객실
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다.");
     //장바구니 상품
