@@ -1,16 +1,18 @@
 package com.miniproject.wish.service;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.member.repository.MemberRepository;
+import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.wish.dto.WishResponses.AccommodationWishResDto;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.exception.AlreadyWishException;
 import com.miniproject.domain.wish.exception.WishNotFoundException;
 import com.miniproject.domain.wish.repository.WishRepository;
 import com.miniproject.domain.wish.service.WishService;
+import com.miniproject.global.resolver.LoginInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,27 +45,27 @@ class WishServiceTest {
     private WishRepository wishRepository;
 
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @Mock
     private AccommodationRepository accommodationRepository;
 
     private Member member;
     private Accommodation accommodation1;
-    private Accommodation accommodation2
+    private Accommodation accommodation2;
     private LoginInfo loginInfo;
 
     @BeforeEach
     public void init() {
         member = Member.builder()
                 .email("test@test.com")
-                .name("tester")
+                .nickname("tester")
                 .password("123")
                 .password("010-1234-5678").build();
 
         accommodation1 = Accommodation.builder()
                 .name("신라호텔")
-                .type("관광호텔")
+                .type(AccommodationType.HOTEL)
                 .address("경기도 용인시 수지구")
                 .phoneNumber("02-1234-1234")
                 .homepage("www.test.com")
@@ -72,16 +74,16 @@ class WishServiceTest {
                 .categoryParking(true)
                 .categoryCooking(true)
                 .categoryPickup(false)
-                .categoryAmenities(false)
-                .categoryDiningArea(true)
-                .checkIn(LocalDateTime.parse("2020-01-01T11:00:00"))
-                .checkOut(LocalDateTime.parse("2020-01-01T11:00:00"))
+                .categoryAmenities("향수")
+                .categoryDiningArea("바베큐장")
+                .checkIn(LocalTime.parse("T11:00:00"))
+                .checkOut(LocalTime.parse("T11:00:00"))
                 .wishCount(0)
                 .viewCount(0).build();
 
         accommodation2 = Accommodation.builder()
                 .name("고려호텔")
-                .type("관광호텔")
+                .type(AccommodationType.HOTEL)
                 .address("서울시 종로구")
                 .phoneNumber("02-1234-1234")
                 .homepage("www.test.com")
@@ -90,10 +92,10 @@ class WishServiceTest {
                 .categoryParking(true)
                 .categoryCooking(true)
                 .categoryPickup(false)
-                .categoryAmenities(false)
-                .categoryDiningArea(true)
-                .checkIn(LocalDateTime.parse("2020-01-01T11:00:00"))
-                .checkOut(LocalDateTime.parse("2020-01-01T11:00:00"))
+                .categoryAmenities("향수")
+                .categoryDiningArea("바베큐장")
+                .checkIn(LocalTime.parse("T11:00:00"))
+                .checkOut(LocalTime.parse("T11:00:00"))
                 .wishCount(0)
                 .viewCount(0).build();
 
@@ -109,9 +111,9 @@ class WishServiceTest {
             // given
             Long accommodationId = 1L;
 
-            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation));
-            when(memberRepository.findByEmail(loginInfo.userEmail())).thenReturn(member);
-            when(wishRepository.findByMemberAndAccommodation(member, accommodation)).thenReturn(Optional.empty());
+            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation1));
+            when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
+            when(wishRepository.findByMemberAndAccommodation(member, accommodation1)).thenReturn(Optional.empty());
             when(wishRepository.save(any(Wish.class))).thenAnswer(invocation -> {
                 Wish wish = invocation.getArgument(0);
                 ReflectionTestUtils.setField(wish, "wishId", 1L);  // Set a dummy ID for the saved wish
@@ -124,7 +126,7 @@ class WishServiceTest {
             // then
             assertThat(1L).isEqualTo(savedWishId);
             verify(wishRepository, times(1)).save(any(Wish.class));
-            verify(accommodation, times(1)).plusWishCount();
+            verify(accommodation1, times(1)).plusWishCount();
         }
 
         @Test
@@ -147,11 +149,11 @@ class WishServiceTest {
             Long accommodationId = 1L;
             Wish wish = Wish.builder()
                     .member(member)
-                    .accommodation(accommodation).build();
+                    .accommodation(accommodation1).build();
 
-            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation));
-            when(memberRepository.findByEmail(loginInfo.userEmail())).thenReturn(member);
-            when(wishRepository.findByMemberAndAccommodation(member, accommodation)).thenReturn(Optional.of(wish));
+            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation1));
+            when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
+            when(wishRepository.findByMemberAndAccommodation(member, accommodation1)).thenReturn(Optional.of(wish));
 
             assertThrows(AlreadyWishException.class, () -> wishService.saveWish(accommodationId, loginInfo));
         }
@@ -167,18 +169,18 @@ class WishServiceTest {
             Long accommodationId = 1L;
             Wish wish = Wish.builder()
                     .member(member)
-                    .accommodation(accommodation).build();
+                    .accommodation(accommodation1).build();
 
-            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation));
-            when(memberRepository.findByEmail(loginInfo.userEmail())).thenReturn(member);
-            when(wishRepository.findByMemberAndAccommodation(member, accommodation)).thenReturn(Optional.of(wish));
+            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation1));
+            when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
+            when(wishRepository.findByMemberAndAccommodation(member, accommodation1)).thenReturn(Optional.of(wish));
 
             // when
             wishService.deleteWish(accommodationId, loginInfo);
 
             // then
             verify(wishRepository).delete(wish);
-            verify(accommodation).minusWishCount();
+            verify(accommodation1).minusWishCount();
         }
 
         @Test
@@ -202,9 +204,9 @@ class WishServiceTest {
             // Given
             Long accommodationId = 1L;
 
-            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation));
-            when(memberRepository.findByEmail(loginInfo.userEmail())).thenReturn(member);
-            when(wishRepository.findByMemberAndAccommodation(member, accommodation)).thenReturn(Optional.empty());
+            when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation1));
+            when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
+            when(wishRepository.findByMemberAndAccommodation(member, accommodation1)).thenReturn(Optional.empty());
 
             // Then
             assertThrows(WishNotFoundException.class, () -> {
@@ -231,7 +233,7 @@ class WishServiceTest {
             AccommodationWishResDto dto2 = AccommodationWishResDto.fromEntity(wish2);
             List<AccommodationWishResDto> expectedDtos = Arrays.asList(dto1, dto2);
 
-            when(memberRepository.findById(loginInfo.userEmail())).thenReturn(member);
+            when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
             when(wishRepository.findAllByMember(member)).thenReturn(Optional.of(wishes));
             when(AccommodationWishResDto.fromEntity(wish1)).thenReturn(dto1);
             when(AccommodationWishResDto.fromEntity(wish2)).thenReturn(dto2);

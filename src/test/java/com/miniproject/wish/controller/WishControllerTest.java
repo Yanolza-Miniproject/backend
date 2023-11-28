@@ -1,11 +1,14 @@
 package com.miniproject.wish.controller;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.wish.controller.WishController;
 import com.miniproject.domain.wish.dto.WishResponses.AccommodationWishResDto;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.service.WishService;
+import com.miniproject.global.resolver.LoginInfo;
+import com.miniproject.global.resolver.SecurityContext;
 import com.miniproject.global.util.ResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +24,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,20 +55,20 @@ class WishControllerTest {
 
     private Member member;
     private Accommodation accommodation1;
-    private Accommodation accommodation2
+    private Accommodation accommodation2;
     private LoginInfo loginInfo;
 
     @BeforeEach
     public void init() {
         member = Member.builder()
                 .email("test@test.com")
-                .name("tester")
+                .nickname("tester")
                 .password("123")
                 .password("010-1234-5678").build();
 
         accommodation1 = Accommodation.builder()
                 .name("신라호텔")
-                .type("관광호텔")
+                .type(AccommodationType.HOTEL)
                 .address("경기도 용인시 수지구")
                 .phoneNumber("02-1234-1234")
                 .homepage("www.test.com")
@@ -74,16 +77,16 @@ class WishControllerTest {
                 .categoryParking(true)
                 .categoryCooking(true)
                 .categoryPickup(false)
-                .categoryAmenities(false)
-                .categoryDiningArea(true)
-                .checkIn(LocalDateTime.parse("2020-01-01T11:00:00"))
-                .checkOut(LocalDateTime.parse("2020-01-01T11:00:00"))
+                .categoryAmenities("향수")
+                .categoryDiningArea("바베큐장")
+                .checkIn(LocalTime.parse("T11:00:00"))
+                .checkOut(LocalTime.parse("T11:00:00"))
                 .wishCount(0)
                 .viewCount(0).build();
 
         accommodation2 = Accommodation.builder()
                 .name("고려호텔")
-                .type("관광호텔")
+                .type(AccommodationType.HOTEL)
                 .address("서울시 종로구")
                 .phoneNumber("02-1234-1234")
                 .homepage("www.test.com")
@@ -92,10 +95,10 @@ class WishControllerTest {
                 .categoryParking(true)
                 .categoryCooking(true)
                 .categoryPickup(false)
-                .categoryAmenities(false)
-                .categoryDiningArea(true)
-                .checkIn(LocalDateTime.parse("2020-01-01T11:00:00"))
-                .checkOut(LocalDateTime.parse("2020-01-01T11:00:00"))
+                .categoryAmenities("향수")
+                .categoryDiningArea("바베큐장")
+                .checkIn(LocalTime.parse("T11:00:00"))
+                .checkOut(LocalTime.parse("T11:00:00"))
                 .wishCount(0)
                 .viewCount(0).build();
 
@@ -134,7 +137,7 @@ class WishControllerTest {
         @DisplayName("성공")
         public void _will_success() throws Exception {
 
-            ResponseDTO response = wishController.cancelWish(eq(ACCOMMODATION_ID), securityContext);
+            ResponseDTO response = wishController.cancelWish(eq(ACCOMMODATION_ID), loginInfo);
 
             mockMvc.perform(delete("/api/v1/wish/{accommodation_id}", ACCOMMODATION_ID).with(csrf()))
                     .andExpect(status().isOk())
@@ -167,7 +170,7 @@ class WishControllerTest {
             // when
             when(wishService.getWishes(loginInfo)).thenReturn(expectedDtos);
 
-            ResponseDTO<List<AccommodationWishResDto>> response = wishController.getWishes(securityContext);
+            ResponseDTO<List<AccommodationWishResDto>> response = wishController.getWishes(loginInfo);
 
             // then
             mockMvc.perform(get("/api/v1/wish").with(csrf()))

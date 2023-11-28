@@ -1,11 +1,16 @@
 package com.miniproject.domain.room.dto.response;
 
+import com.miniproject.domain.room.dto.RoomInventoryDTO;
 import com.miniproject.domain.room.entity.Room;
+import com.miniproject.domain.room.entity.RoomInventory;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record RoomDetailResponse(
         Long id,
+        String accommodationName,
         String name,
         Integer price,
         Integer capacity,
@@ -15,12 +20,20 @@ public record RoomDetailResponse(
         Boolean categoryInternet,
         Boolean categoryRefrigerator,
         Boolean categoryBathingFacilities,
-        Boolean categoryDryer
+        Boolean categoryDryer,
+        List<RoomInventoryDTO> roomInventories
 ) {
 
     public static RoomDetailResponse fromEntity(Room entity) {
+
+        List<RoomInventory> roomInventories = entity.getRoomInventories();
+        List<RoomInventoryDTO> roomInventoryDTOList = roomInventories.stream()
+                .map(RoomInventoryDTO::fromEntity)
+                .toList();
+
         return RoomDetailResponse.builder()
                 .id(entity.getId())
+                .accommodationName(entity.getAccommodation().getName())
                 .name(entity.getName())
                 .price(entity.getPrice())
                 .capacity(entity.getCapacity())
@@ -31,6 +44,7 @@ public record RoomDetailResponse(
                 .categoryRefrigerator(entity.isCategoryRefrigerator())
                 .categoryBathingFacilities(entity.isCategoryBathingFacilities())
                 .categoryDryer(entity.isCategoryDryer())
+                .roomInventories(roomInventoryDTOList)
                 .build();
     }
 }

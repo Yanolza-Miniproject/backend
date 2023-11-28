@@ -1,6 +1,7 @@
 package com.miniproject.wish.repository;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.repository.WishRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -23,18 +25,16 @@ class WishRepositoryTest {
     private Accommodation accommodation;
 
     @BeforeEach
-    void init() {
-        wishRepository.deleteAll();
-
+    public void init() {
         member = Member.builder()
                 .email("test@test.com")
-                .name("tester")
+                .nickname("tester")
                 .password("123")
                 .password("010-1234-5678").build();
 
         accommodation = Accommodation.builder()
                 .name("신라호텔")
-                .type("관광호텔")
+                .type(AccommodationType.HOTEL)
                 .address("경기도 용인시 수지구")
                 .phoneNumber("02-1234-1234")
                 .homepage("www.test.com")
@@ -43,10 +43,10 @@ class WishRepositoryTest {
                 .categoryParking(true)
                 .categoryCooking(true)
                 .categoryPickup(false)
-                .categoryAmenities(false)
-                .categoryDiningArea(true)
-                .checkIn(LocalDateTime.parse("2020-01-01T11:00:00"))
-                .checkOut(LocalDateTime.parse("2020-01-01T11:00:00"))
+                .categoryAmenities("향수")
+                .categoryDiningArea("바베큐장")
+                .checkIn(LocalTime.parse("T11:00:00"))
+                .checkOut(LocalTime.parse("T11:00:00"))
                 .wishCount(0)
                 .viewCount(0).build();
     }

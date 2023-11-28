@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -22,34 +23,35 @@ public class Accommodation {
     @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
-    @Column
+    @Column //
     private String name;
-    @Column
-    private String type; // TODO: enum타입으로 변경 고려
-    @Column
+    @Column //
+    @Enumerated(EnumType.STRING)
+    private AccommodationType type;
+    @Column //
     private String address;
-    @Column
+    @Column //
     private String phoneNumber;
-    @Column
+    @Column //
     private String homepage;
-    @Column
+    @Column(length = 1000) //
     private String infoDetail;
     @Column
     private String thumbnailUrl;
-    @Column
+    @Column //
     private boolean categoryParking;
-    @Column
+    @Column //
     private boolean categoryCooking;
-    @Column
+    @Column //
     private boolean categoryPickup;
-    @Column
-    private boolean categoryAmenities;
-    @Column
-    private boolean categoryDiningArea;
-    @Column
-    private LocalDateTime checkIn;
-    @Column
-    private LocalDateTime checkOut;
+    @Column //
+    private String categoryAmenities;
+    @Column //
+    private String categoryDiningArea;
+    @Column //
+    private LocalTime checkIn;
+    @Column //
+    private LocalTime checkOut;
     @Column
     private int wishCount;
     @Column
