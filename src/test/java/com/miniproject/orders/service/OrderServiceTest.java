@@ -43,7 +43,7 @@ public class OrderServiceTest {
     public void getOrders_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -76,9 +76,9 @@ public class OrderServiceTest {
     public void getOrders_willFail() {
         //given
         Member member1 = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         Member member2 = Member.builder()
-            .id(2L).name("이하").email("kjf@gmail.com").password("ffdfda231321@da").build();
+            .id(2L).nickname("이하").email("kjf@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -109,7 +109,7 @@ public class OrderServiceTest {
     public void getOrder_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -142,7 +142,7 @@ public class OrderServiceTest {
     public void registerPayment_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)

@@ -6,9 +6,9 @@ import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
-import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.wish.service.WishService;
+import com.miniproject.global.resolver.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -24,9 +25,10 @@ import java.util.List;
 public class AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
+    private final WishService wishService;
 
     @Transactional
-    public AccommodationDetailResponse getAccommodationWithRoomById(Long accommodationId) {
+    public AccommodationDetailResponse getAccommodationWithRoomById(Long accommodationId, LoginInfo loginInfo) {
 
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
                 .orElseThrow(AccommodationNotFoundException::new);
@@ -38,11 +40,14 @@ public class AccommodationService {
                 .min(Integer::compare)
                 .orElse(null);
 
-        // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
-        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(member);
         boolean isWished = false;
-        if(likedAccommodationIds.contains(accommodation.getId())) {
-            isWished = true;
+
+        if(loginInfo.username() != "anonymousUser") {
+            // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
+            List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+            if (likedAccommodationIds.contains(accommodation.getId())) {
+                isWished = true;
+            }
         }
 
         return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
@@ -55,7 +60,8 @@ public class AccommodationService {
                                                                Integer categoryCooking,
                                                                Integer categoryPickup,
                                                                Integer wishCount,
-                                                               Integer region01) {
+                                                               Integer region01,
+                                                               LoginInfo loginInfo) {
 
         String region = null;
 
@@ -66,27 +72,30 @@ public class AccommodationService {
         Page<Accommodation> result = accommodationRepository
                 .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
 
-        // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
-        List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(member);
+        List<Long> likedAccommodationIds;
 
-        return accommodations.map(accommodation -> {
+        if(loginInfo.username() != "anonymousUser") {
+            likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+        } else {
+            likedAccommodationIds = new ArrayList<>();
+        }
+
+
+        return result.map(accommodation -> {
             Integer lowestPrice = accommodation.getRooms().stream()
                     .map(Room::getPrice)
                     .min(Integer::compare)
                     .orElse(null);
 
+
             boolean isWished = false;
-            if(likedAccommodationIds.contains(accommodation.getId())) {
+
+            if (loginInfo.username() != "anonymousUser" && likedAccommodationIds.contains(accommodation.getId())) {
                 isWished = true;
             }
 
             // AccommodationSimpleResponse 객체를 생성하면서 lowest_price 값을 설정
             return AccommodationSimpleResponse.fromEntity(accommodation, lowestPrice, isWished);
         });
-
-
     }
-
-
-
 }

@@ -75,7 +75,6 @@ public class BasketService {
                 .room(roomInBasket.getRoom())
                 .member(member)
                 .orders(save)
-                .roomInBasket(roomInBasket)
                 .build();
             roomInOrdersList.add(roomInOrders);
         }

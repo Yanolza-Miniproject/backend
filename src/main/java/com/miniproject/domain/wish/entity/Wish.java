@@ -20,12 +20,10 @@ public class Wish {
     @Column(name = "wish_id")
     private Long id;
 
-    // 숙소가 가진 좋아요 수를 확인하기 위해서 양방향 해야 하나?
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "accommodation_id")
     private Accommodation accommodation;
 
-    // 멤버가 가진 숙소를 확인하기 위해 양방향 해야 하나?
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

@@ -57,7 +57,7 @@ public class BasketServiceTest {
     public void getBasket_willSuccess() throws Exception {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         Basket basket = new Basket(member, 1L);
         List<Basket> basketList = new ArrayList<>();
         basketList.add(basket);
@@ -99,7 +99,7 @@ public class BasketServiceTest {
         ids.add(1L);
         CheckBasketRequestDto dto = CheckBasketRequestDto.builder().ids(ids).build();
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         Basket basket = new Basket(member, 1L);
         List<Basket> basketList = new ArrayList<>();
         basketList.add(basket);
@@ -119,7 +119,7 @@ public class BasketServiceTest {
     public void registerOrder_willSuccess() throws Exception {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         List<Long> ids = new ArrayList<>();
         ids.add(1L);
         CheckBasketRequestDto dto = CheckBasketRequestDto.builder().ids(ids).build();
@@ -184,7 +184,7 @@ public class BasketServiceTest {
     public void getActivateBasket_willSuccess() throws Exception {
         //given
         Member member = Member.builder()
-            .id(1L).name("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         List<Basket> nowBasket = new ArrayList<>();
         given(basketRepository.findByMember(any(Member.class))).willReturn(nowBasket);
         given(basketRepository.save(any(Basket.class))).willReturn(new Basket(member, 1L));

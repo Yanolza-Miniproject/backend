@@ -1,6 +1,7 @@
 package com.miniproject.domain.room.dto.response;
 
 import com.miniproject.domain.room.entity.RoomInOrders;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +18,8 @@ public class RoomInOrdersGetResponseDto {
     String roomName;
     int price;
     int numberOfGuests;
-    LocalDateTime checkInAt;
-    LocalDateTime checkOutAt;
+    LocalDate checkInAt;
+    LocalDate checkOutAt;
     String roomUrl;
 
     public RoomInOrdersGetResponseDto(RoomInOrders room) {
@@ -30,7 +31,7 @@ public class RoomInOrdersGetResponseDto {
         this.checkInAt = room.getCheckInAt();
         this.checkOutAt = room.getCheckOutAt();
         // image 가 null 일때, 예외처리 필요
-        if (room.getRoom().getRoomImages()!=null){
+        if (!room.getRoom().getRoomImages().isEmpty()) {
             this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
         }
     }

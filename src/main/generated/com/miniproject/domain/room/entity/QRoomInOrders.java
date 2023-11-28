@@ -22,9 +22,9 @@ public class QRoomInOrders extends EntityPathBase<RoomInOrders> {
 
     public static final QRoomInOrders roomInOrders = new QRoomInOrders("roomInOrders");
 
-    public final DateTimePath<java.time.LocalDateTime> checkInAt = createDateTime("checkInAt", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> checkInAt = createDate("checkInAt", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> checkOutAt = createDateTime("checkOutAt", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> checkOutAt = createDate("checkOutAt", java.time.LocalDate.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -35,8 +35,6 @@ public class QRoomInOrders extends EntityPathBase<RoomInOrders> {
     public final com.miniproject.domain.orders.entity.QOrders orders;
 
     public final QRoom room;
-
-    public final QRoomInBasket roomInBasket;
 
     public QRoomInOrders(String variable) {
         this(RoomInOrders.class, forVariable(variable), INITS);
@@ -59,7 +57,6 @@ public class QRoomInOrders extends EntityPathBase<RoomInOrders> {
         this.member = inits.isInitialized("member") ? new com.miniproject.domain.member.entity.QMember(forProperty("member")) : null;
         this.orders = inits.isInitialized("orders") ? new com.miniproject.domain.orders.entity.QOrders(forProperty("orders"), inits.get("orders")) : null;
         this.room = inits.isInitialized("room") ? new QRoom(forProperty("room"), inits.get("room")) : null;
-        this.roomInBasket = inits.isInitialized("roomInBasket") ? new QRoomInBasket(forProperty("roomInBasket"), inits.get("roomInBasket")) : null;
     }
 
 }
