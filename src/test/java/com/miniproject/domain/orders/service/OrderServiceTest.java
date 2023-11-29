@@ -1,4 +1,4 @@
-package com.miniproject.orders.service;
+package com.miniproject.domain.orders.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

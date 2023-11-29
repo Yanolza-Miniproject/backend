@@ -1,4 +1,4 @@
-package com.miniproject.payment.service;
+package com.miniproject.domain.payment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -127,7 +127,7 @@ public class PaymentServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 20);
         Page<Payment> payments =
             new PageImpl<>(paymentList.subList(0, 2), pageRequest, paymentList.size());
-        given(paymentRepository.findAllByMemberContaining(any(), any())).willReturn(payments);
+        given(paymentRepository.findAllByMember(any(), any())).willReturn(payments);
 
         //when
         List<PaymentResponseDto> responses = paymentService.getPayments(1, 20, member);
