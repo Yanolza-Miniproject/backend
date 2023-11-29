@@ -73,13 +73,11 @@ public class JwtService {
         //DB에 저장된 member의 리프레시 토큰을 꺼내옴
         var refreshToken = refreshTokenRepository.findRefreshTokenByMemberEmail(jwtPayload.email());
 
-        //같은지 비교
-
-        String savedTokenInfo = refreshToken.getToken();
-
-        if (savedTokenInfo == null) {
+        if (refreshToken.getToken() == null) {
             throw new RefreshTokenNotFoundException();
         }
+        String savedTokenInfo = refreshToken.getToken();
+
         if (!isAcceptable(savedTokenInfo, request.refreshToken())) {
             throw new RefreshTokenException();
         }
