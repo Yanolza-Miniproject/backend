@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: mini-5
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb;MODE=MYSQL
@@ -18,7 +20,16 @@ spring:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: true
+    properties:
+      hibernate.format_sql: true  # debug query more pretty
+#      hibernate.default_batch_fetch_size: 50 # select complicated query bulk (one of solution n+1)
 
 
+
+service:
+  jwt:
+    secret-key: kj23h523kj5h24o1209481230948fsdfkljut90dgd89f0s2kl3daisoudqiwouekjashdjkahjkaqwueyqouasioudklascxcvhjuopqfu9aduro3
+    access-expiration: 360000
+    refresh-expiration: 864000000
 
 

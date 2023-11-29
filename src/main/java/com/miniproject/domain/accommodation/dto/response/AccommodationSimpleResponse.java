@@ -3,13 +3,13 @@ package com.miniproject.domain.accommodation.dto.response;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Builder
 public record AccommodationSimpleResponse(
         Long id,
         String name,
-        String type,
+        Integer type,
         String address,
         String phoneNumber,
         String homepage,
@@ -18,10 +18,10 @@ public record AccommodationSimpleResponse(
         Boolean categoryParking,
         Boolean categoryCooking,
         Boolean categoryPickup,
-        Boolean categoryAmenities,
-        Boolean categoryDiningArea,
-        LocalDateTime checkIn,
-        LocalDateTime checkOut,
+        String categoryAmenities,
+        String categoryDiningArea,
+        String checkIn,
+        String checkOut,
         Integer wishCount,
         Boolean isWish,
         Integer lowest_price,
@@ -31,10 +31,14 @@ public record AccommodationSimpleResponse(
 
     public static AccommodationSimpleResponse fromEntity(Accommodation entity) {
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedCheckIn = entity.getCheckIn().format(formatter);
+        String formattedCheckOut = entity.getCheckOut().format(formatter);
+
         return AccommodationSimpleResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .type(entity.getType())
+                .type(entity.getType().getIndex())
                 .address(entity.getAddress())
                 .phoneNumber(entity.getPhoneNumber())
                 .homepage(entity.getHomepage())
@@ -43,10 +47,10 @@ public record AccommodationSimpleResponse(
                 .categoryParking(entity.isCategoryParking())
                 .categoryCooking(entity.isCategoryCooking())
                 .categoryPickup(entity.isCategoryPickup())
-                .categoryAmenities(entity.isCategoryAmenities())
-                .categoryDiningArea(entity.isCategoryDiningArea())
-                .checkIn(entity.getCheckIn())
-                .checkOut(entity.getCheckOut())
+                .categoryAmenities(entity.getCategoryAmenities())
+                .categoryDiningArea(entity.getCategoryDiningArea())
+                .checkIn(formattedCheckIn)
+                .checkOut(formattedCheckOut)
                 .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
                 .build();
@@ -54,10 +58,14 @@ public record AccommodationSimpleResponse(
 
     public static AccommodationSimpleResponse fromEntity(Accommodation entity, Integer lowestPrice, boolean isWish) {
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedCheckIn = entity.getCheckIn().format(formatter);
+        String formattedCheckOut = entity.getCheckOut().format(formatter);
+
         return AccommodationSimpleResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .type(entity.getType())
+                .type(entity.getType().getIndex())
                 .address(entity.getAddress())
                 .phoneNumber(entity.getPhoneNumber())
                 .homepage(entity.getHomepage())
@@ -66,10 +74,10 @@ public record AccommodationSimpleResponse(
                 .categoryParking(entity.isCategoryParking())
                 .categoryCooking(entity.isCategoryCooking())
                 .categoryPickup(entity.isCategoryPickup())
-                .categoryAmenities(entity.isCategoryAmenities())
-                .categoryDiningArea(entity.isCategoryDiningArea())
-                .checkIn(entity.getCheckIn())
-                .checkOut(entity.getCheckOut())
+                .categoryAmenities(entity.getCategoryAmenities())
+                .categoryDiningArea(entity.getCategoryDiningArea())
+                .checkIn(formattedCheckIn)
+                .checkOut(formattedCheckOut)
                 .wishCount(entity.getWishCount())
                 .viewCount(entity.getViewCount())
                 .isWish(isWish)
