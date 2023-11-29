@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaymentRepository extends JpaRepository<Payment,Long> {
 
-    Page<Payment> findAllByMemberContaining(Pageable pageable, Member member);
+    Page<Payment> findAllByMember(Pageable pageable, Member member);
 }

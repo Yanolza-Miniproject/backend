@@ -54,4 +54,8 @@ public class Basket {
         this.totalPrice += roomInBasket.getRoom().getPrice();
         this.totalCount +=1;
     }
+    public void clearBasket(){
+        this.totalPrice = 0;
+        this.totalCount = 0;
+    }
 }
