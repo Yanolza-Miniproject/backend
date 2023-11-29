@@ -21,15 +21,17 @@ public class CustomLoginProvider implements AuthenticationProvider {
 
 
     @Override
-    public Authentication authenticate(Authentication authentication)
-            throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) {
+
+
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
         AccountContext accountContext = (AccountContext) userDetailsService
                 .loadUserByUsername(username);
+
         if (!passwordEncoder.matches(password, accountContext.getPassword())) {
-            throw new BadCredentialsException("Login Fail");
+            throw new BadCredentialsException("비밀번호가 맞지 않습니다.");
         }
         return CustomLoginToken.authenticate(username, accountContext.getAuthorities());
     }
@@ -39,4 +41,5 @@ public class CustomLoginProvider implements AuthenticationProvider {
         return CustomLoginToken.class.isAssignableFrom(authentication);
     }
 }
+
 
