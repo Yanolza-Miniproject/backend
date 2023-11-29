@@ -47,6 +47,17 @@ public class JwtProvider {
                 .compact();
     }
 
+    public String reCreateToken(JwtPayload jwtPayload, long expiration) {
+        Date now = new Date();
+        return Jwts.builder()
+                .claim(USER_KEY, Objects.requireNonNull(jwtPayload.email()))
+                .issuer(issuer)
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + expiration))
+                .signWith(secretKey, Jwts.SIG.HS512)
+                .compact();
+    }
+
     public JwtPayload verifyToken(String jwtToken) {
         try {
             Jws<Claims> claimsJws = Jwts.parser().verifyWith(secretKey).build()

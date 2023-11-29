@@ -44,7 +44,8 @@ public class SecurityFilterConfig {
         http.authorizeHttpRequests(request ->
                 request
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/accommodations"), new AntPathRequestMatcher("/api/v1/accommodations/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/v1/members/join"), new AntPathRequestMatcher("/api/v1/members/login", "/api/v1/refresh")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/members/join"), new AntPathRequestMatcher("/api/v1/members/login")
+                        ,new AntPathRequestMatcher("/api/v1/refresh")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/rooms"), new AntPathRequestMatcher("/api/v1/rooms/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/rooms/{room_id}/orders")).authenticated()
                         .anyRequest().authenticated()

@@ -78,7 +78,7 @@ public class JwtService {
         }
 
         //새로운 액세스 토큰 발급
-        String refreshedAccessToken = jwtProvider.createToken(jwtPayload, accessExpiration);
+        String refreshedAccessToken = jwtProvider.reCreateToken(jwtPayload, accessExpiration);
         return new JwtPair(refreshedAccessToken, request.refreshToken());
     }
 
