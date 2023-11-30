@@ -45,8 +45,8 @@ class WishRepositoryTest {
                 .categoryPickup(false)
                 .categoryAmenities("향수")
                 .categoryDiningArea("바베큐장")
-                .checkIn(LocalTime.parse("T11:00:00"))
-                .checkOut(LocalTime.parse("T11:00:00"))
+                .checkIn(LocalTime.of(11, 1))
+                .checkOut(LocalTime.of(13, 1))
                 .wishCount(0)
                 .viewCount(0).build();
     }
@@ -64,7 +64,7 @@ class WishRepositoryTest {
         Wish saved = wishRepository.save(wish);
 
         // then
-        assertThat(saved).extracting("accmmodation", "member").containsExactly(
+        assertThat(saved).extracting("accommodation", "member").containsExactly(
                 wish.getAccommodation(), wish.getMember());
     }
 
@@ -88,7 +88,7 @@ class WishRepositoryTest {
 
     @Test
     @DisplayName("사용자와 숙박 정보로 좋아요 조회 테스트")
-    void findMyMemberANdAccommodation() {
+    void findMyMemberAndAccommodation() {
         // given
         Wish wish = Wish.builder()
                 .accommodation(accommodation)
@@ -97,10 +97,10 @@ class WishRepositoryTest {
         Wish saved = wishRepository.save(wish);
 
         // when
-        Wish fined = wishRepository.findByMemberAndAccommodation(member, accommodation).get();
+        Wish found = wishRepository.findByMemberAndAccommodation(member, accommodation).orElse(null);
 
         // then
-        assertThat(saved.getAccommodation()).isEqualTo(fined.getAccommodation());
-        assertThat(saved.getMember()).isEqualTo(fined.getMember());
+        assertThat(saved.getAccommodation()).isEqualTo(found.getAccommodation());
+        assertThat(saved.getMember()).isEqualTo(found.getMember());
     }
 }

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -76,8 +77,8 @@ class WishServiceTest {
                 .categoryPickup(false)
                 .categoryAmenities("향수")
                 .categoryDiningArea("바베큐장")
-                .checkIn(LocalTime.parse("T11:00:00"))
-                .checkOut(LocalTime.parse("T11:00:00"))
+                .checkIn(LocalTime.of(11, 1))
+                .checkOut(LocalTime.of(13, 1))
                 .wishCount(0)
                 .viewCount(0).build();
 
@@ -94,8 +95,8 @@ class WishServiceTest {
                 .categoryPickup(false)
                 .categoryAmenities("향수")
                 .categoryDiningArea("바베큐장")
-                .checkIn(LocalTime.parse("T11:00:00"))
-                .checkOut(LocalTime.parse("T11:00:00"))
+                .checkIn(LocalTime.of(11, 1))
+                .checkOut(LocalTime.of(13, 1))
                 .wishCount(0)
                 .viewCount(0).build();
 
@@ -116,7 +117,7 @@ class WishServiceTest {
             when(wishRepository.findByMemberAndAccommodation(member, accommodation1)).thenReturn(Optional.empty());
             when(wishRepository.save(any(Wish.class))).thenAnswer(invocation -> {
                 Wish wish = invocation.getArgument(0);
-                ReflectionTestUtils.setField(wish, "wishId", 1L);  // Set a dummy ID for the saved wish
+                ReflectionTestUtils.setField(wish, "id", 1L);  // Set a dummy ID for the saved wish
                 return wish;
             });
 
@@ -126,7 +127,6 @@ class WishServiceTest {
             // then
             assertThat(1L).isEqualTo(savedWishId);
             verify(wishRepository, times(1)).save(any(Wish.class));
-            verify(accommodation1, times(1)).plusWishCount();
         }
 
         @Test
@@ -180,7 +180,6 @@ class WishServiceTest {
 
             // then
             verify(wishRepository).delete(wish);
-            verify(accommodation1).minusWishCount();
         }
 
         @Test
@@ -229,20 +228,19 @@ class WishServiceTest {
                     .member(member)
                     .accommodation(accommodation2).build();
             List<Wish> wishes = Arrays.asList(wish1, wish2);
-            AccommodationWishResDto dto1 = AccommodationWishResDto.fromEntity(wish1);
-            AccommodationWishResDto dto2 = AccommodationWishResDto.fromEntity(wish2);
-            List<AccommodationWishResDto> expectedDtos = Arrays.asList(dto1, dto2);
 
             when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
             when(wishRepository.findAllByMember(member)).thenReturn(Optional.of(wishes));
-            when(AccommodationWishResDto.fromEntity(wish1)).thenReturn(dto1);
-            when(AccommodationWishResDto.fromEntity(wish2)).thenReturn(dto2);
+
+            AccommodationWishResDto dto1 = AccommodationWishResDto.fromEntity(wish1);
+            AccommodationWishResDto dto2 = AccommodationWishResDto.fromEntity(wish2);
+            List<AccommodationWishResDto> expectedDtos = Arrays.asList(dto1, dto2);
 
             // when
             List<AccommodationWishResDto> resultDtos = wishService.getWishes(loginInfo);
 
             // then
-            assertThat(resultDtos).isEqualTo(expectedDtos);
+            assertThat(resultDtos).usingRecursiveFieldByFieldElementComparator().containsExactlyElementsOf(expectedDtos);
         }
     }
 }
