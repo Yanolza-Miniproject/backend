@@ -3,45 +3,36 @@ package com.miniproject.domain.wish.controller;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.wish.controller.WishController;
 import com.miniproject.domain.wish.dto.WishResponses.AccommodationWishResDto;
 import com.miniproject.domain.wish.entity.Wish;
 import com.miniproject.domain.wish.service.WishService;
 import com.miniproject.global.config.CustomHttpHeaders;
 import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.jwt.service.JwtService;
-import com.miniproject.global.resolver.LoginInfo;
-import com.miniproject.global.resolver.SecurityContext;
-import com.miniproject.global.util.ResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@WebMvcTest(WishController.class)
 @SpringBootTest
@@ -49,17 +40,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@ExtendWith(MockitoExtension.class)
 class WishControllerTest {
 
-    @InjectMocks
-    private WishController wishController;
+    @Autowired
+    private MockMvc mockMvc;
 
     @MockBean
     private WishService wishService;
 
-    @MockBean
+    @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private WishController wishController;
 
     final Long ACCOMMODATION_ID = 1L;
     private Member member;
@@ -123,11 +114,6 @@ class WishControllerTest {
 //        loginInfo = new LoginInfo("user@example.com");
     }
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(wishController).build();
-    }
-
     @Nested
     @DisplayName("좋아요 등록")
     class AddWish {
@@ -138,10 +124,12 @@ class WishControllerTest {
 
             when(wishService.saveWish(anyLong(), any())).thenReturn(1L);
 
-            mockMvc.perform(post("/api/v1/wish/{accommodation_id}", ACCOMMODATION_ID)
-                    .with(csrf()))
+            mockMvc.perform(post("/api/v1/wish/{accommodation_id}", 1L)
+                    .with(csrf())
+                    .headers(testAuthHeaders)
+                    .header("accept", "application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("좋아요 성공"))
+                    .andExpect(jsonPath("$.message").value("좋아요 성공"))
                     .andDo(print());
 
             verify(wishService, times(1)).saveWish(eq(ACCOMMODATION_ID), any());
@@ -155,15 +143,17 @@ class WishControllerTest {
         @DisplayName("성공")
         public void _will_success() throws Exception {
 
-            ResponseDTO response = wishController.cancelWish(eq(ACCOMMODATION_ID), any());
+            doNothing().when(wishService).deleteWish(anyLong(), any());
 
-            mockMvc.perform(delete("/api/v1/wish/{accommodation_id}", ACCOMMODATION_ID).with(csrf()))
+            mockMvc.perform(delete("/api/v1/wish/{accommodation_id}", 1L)
+                    .with(csrf())
+                    .headers(testAuthHeaders)
+                    .header("accept", "application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("좋아요 취소"))
+                    .andExpect(jsonPath("$.message").value("좋아요 취소"))
                     .andDo(print());
 
             verify(wishService, times(1)).deleteWish(eq(ACCOMMODATION_ID), any());
-            assertThat("좋아요 취소").isEqualTo(response.getMessage());
         }
     }
 
@@ -173,7 +163,7 @@ class WishControllerTest {
         @Test
         @DisplayName("성공")
         public void _will_success() throws Exception {
-            // given
+             // given
             Wish wish1 = Wish.builder()
                     .member(member)
                     .accommodation(accommodation1).build();
@@ -188,18 +178,17 @@ class WishControllerTest {
             // when
             when(wishService.getWishes(any())).thenReturn(expectedDtos);
 
-            ResponseDTO<List<AccommodationWishResDto>> response = wishController.getWishes(any());
-
             // then
-            mockMvc.perform(get("/api/v1/wish").with(csrf()))
+            mockMvc.perform(get("/api/v1/wish")
+                    .with(csrf())
+                    .headers(testAuthHeaders)
+                    .header("accept", "application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.message").value("좋아요 리스트 조회 성공"))
-                    .andExpect(jsonPath("$.data").value(wishes))
+                    .andExpect(jsonPath("$.data[0].accommodation.name").value(dto1.getAccommodation().name()))
+                    .andExpect(jsonPath("$.data[1].accommodation.name").value(dto2.getAccommodation().name()))
                     .andDo(print());
-
             verify(wishService).getWishes(any());
-            assertThat("좋아요 리스트 조회 성공").isEqualTo(response.getMessage());
-            assertThat(expectedDtos).isEqualTo(response.getData());
         }
     }
 }
