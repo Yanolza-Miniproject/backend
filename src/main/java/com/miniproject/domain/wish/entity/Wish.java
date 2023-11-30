@@ -20,11 +20,11 @@ public class Wish {
     @Column(name = "wish_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "accommodation_id")
     private Accommodation accommodation;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id")
     private Member member;
 
