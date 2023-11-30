@@ -1,4 +1,4 @@
-package com.miniproject.wish.repository;
+package com.miniproject.domain.wish.repository;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;

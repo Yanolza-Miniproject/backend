@@ -1,4 +1,4 @@
-package com.miniproject.wish.controller;
+package com.miniproject.domain.wish.controller;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;
