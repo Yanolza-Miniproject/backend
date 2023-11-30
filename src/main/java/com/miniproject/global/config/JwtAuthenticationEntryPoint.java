@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -33,10 +33,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             log.error("Request Uri : {}", request.getRequestURI());
             errorMessage = "토큰 기간이 만료되었습니다. ";
 
-        } else if (authException instanceof BadCredentialsException) {
-            log.error("BadCredentialsException", authException);
+        } else if (authException instanceof InsufficientAuthenticationException) {
+            log.error("InsufficientAuthenticationException", authException);
             log.error("Request Uri : {}", request.getRequestURI());
-            errorMessage = "비밀번호가 맞지 않습니다. ";
+            errorMessage = "아이디 또는 비밀번호가 맞지 않습니다. ";
         } else {
             errorMessage = "유효하지 않은 입력입니다. ";
         }
