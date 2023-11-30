@@ -1,3 +1,30 @@
+#spring:
+#  application:
+#    name: mini-5
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://fmini-project-db.ctungrqk7z5j.ap-northeast-2.rds.amazonaws.com:3306/mini
+#    username: admin
+#    password: rjrldjEo
+#
+#  jpa:
+#    hibernate:
+#      show-sql: true
+#      #      none으로 변경 예정
+#      ddl-auto: none
+#    jdbc:
+#      time_zone: Asia/Seoul
+#
+#service:
+#  jwt:
+#    secret-key: kj23h523kj5h24o1209481230948fsdfkljut90dgd89f0s2kl3daisoudqiwouekjashdjkahjkaqwueyqouasioudklascxcvhjuopqfu9aduro3
+#    access-expiration: 360000
+#    refresh-expiration: 864000000
+#  openapi:
+#    secret-key: 6NKGVwiUsALByF989ns0LeGMRJ5r%2F%2BZdKF1i6CvWsD7bW13srHcst1xDVutnXPhtZ36Xa00PMZRRfbMuXaUk2g%3D%3D
+#
+
+
 spring:
   application:
     name: mini-5
@@ -15,7 +42,7 @@ spring:
     console:
       enabled: true
   jpa:
-    show-sql: true
+#    show-sql: true
     generate-ddl: true
     hibernate:
       ddl-auto: create
@@ -31,5 +58,7 @@ service:
     secret-key: kj23h523kj5h24o1209481230948fsdfkljut90dgd89f0s2kl3daisoudqiwouekjashdjkahjkaqwueyqouasioudklascxcvhjuopqfu9aduro3
     access-expiration: 360000
     refresh-expiration: 864000000
+  openapi:
+    secret-key: 6NKGVwiUsALByF989ns0LeGMRJ5r%2F%2BZdKF1i6CvWsD7bW13srHcst1xDVutnXPhtZ36Xa00PMZRRfbMuXaUk2g%3D%3D
 
 

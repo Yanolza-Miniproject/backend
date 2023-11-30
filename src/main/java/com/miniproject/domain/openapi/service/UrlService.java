@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Flux;
@@ -27,14 +29,18 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 public class UrlService {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    String secretKey = "6NKGVwiUsALByF989ns0LeGMRJ5r%2F%2BZdKF1i6CvWsD7bW13srHcst1xDVutnXPhtZ36Xa00PMZRRfbMuXaUk2g%3D%3D";
+//    String secretKey = "6NKGVwiUsALByF989ns0LeGMRJ5r%2F%2BZdKF1i6CvWsD7bW13srHcst1xDVutnXPhtZ36Xa00PMZRRfbMuXaUk2g%3D%3D";
+
+    @Value("${service.openapi.secret-key}")
+    String secretKey;
 
     // 숙소 리스트
-    public Mono<List<String>> getContentId() {
+    public Mono<List<String>> getContentId(int numOfRows, int numOfPage) {
         String accommodationListUrl = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";
 
         List<String> contentIdList = new ArrayList<>();
@@ -51,8 +57,8 @@ public class UrlService {
 //                .uri(accommodationListUrl)
                 .uri(uriBuilder -> uriBuilder
 //                        .path("/areaBasedList1")
-                        .queryParam("numOfRows", 10)
-                        .queryParam("pageNo", 30)
+                        .queryParam("numOfRows", numOfRows)
+                        .queryParam("pageNo", numOfPage)
                         .queryParam("MobileOS", "WIN")
                         .queryParam("MobileApp", "mini")
                         .queryParam("_type", "json")
@@ -217,16 +223,12 @@ public class UrlService {
         return Mono.when(accommodationIntros).then(Mono.just(accommodationIntros.stream().map(Mono::block).collect(Collectors.toList())));
     }
 
-    public Flux<List<AccommodationDetailInfo>> getAccommodationDetailInfo(List<String> contentIdList) {
 
-//        List<AccommodationDetailInfo> accommodationDetailInfos = new ArrayList<>();
-        // 해당 리스트에 대한 동시 접근에 대비한 synchronizedList를 이용한 선언
-        // 지금은 저장과 순회가 별개로 이루어지지만 동시에 이루어진다면 순회 시 synchronized로 동기화 블록을 해야한다. << 나중에 더 알아보자
+    public Flux<List<AccommodationDetailInfo>> getAccommodationDetailInfo(List<String> contentIdList) {
         List<AccommodationDetailInfo> accommodationDetailInfos = Collections.synchronizedList(new ArrayList<>());
 
         return Flux.fromIterable(contentIdList)
                 .flatMap(contentId -> {
-
                     String accommodationDetailInfoUrl = "https://apis.data.go.kr/B551011/KorService1/detailInfo1";
 
                     DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(accommodationDetailInfoUrl);
@@ -248,15 +250,16 @@ public class UrlService {
                                     .build())
                             .retrieve()
                             .bodyToMono(String.class)
-                            // concatMap 만약 이거 관련 오류 발생 시
                             .flatMap(response -> {
                                 try {
                                     JsonNode root = objectMapper.readTree(response);
                                     JsonNode items = root.path("response").path("body").path("items").path("item");
 
-                                    List<RoomImageUrlDto> roomImageUrlDtos = new ArrayList<>();
+                                    List<AccommodationDetailInfo> localAccommodationDetailInfos = new ArrayList<>();
 
                                     for (JsonNode item : items) {
+                                        List<RoomImageUrlDto> roomImageUrlDtos = new ArrayList<>();
+
                                         for (int i = 0; i < 5; i++) {
                                             JsonNode imageUrlNode = item.get("roomimg" + i);
                                             if (imageUrlNode != null && !imageUrlNode.asText().isEmpty()) {
@@ -264,7 +267,8 @@ public class UrlService {
                                                 roomImageUrlDtos.add(new RoomImageUrlDto(imageUrl));
                                             }
                                         }
-                                        accommodationDetailInfos.add(
+
+                                        localAccommodationDetailInfos.add(
                                                 AccommodationDetailInfo.builder()
                                                         .contentid(item.get("contentid").asText())
                                                         .roomtitle(item.get("roomtitle").asText())
@@ -285,7 +289,12 @@ public class UrlService {
                                                         .build()
                                         );
                                     }
-                                    return Mono.just(accommodationDetailInfos);
+
+                                    synchronized (accommodationDetailInfos) {
+                                        accommodationDetailInfos.addAll(localAccommodationDetailInfos);
+                                    }
+
+                                    return Mono.just(localAccommodationDetailInfos);
                                 } catch (Exception e) {
                                     if (e.getMessage().contains("SERVICE_KEY_IS_NOT_REGISTERED_ERROR")) {
                                         System.err.println("Error to get DetailInfo of contentId : " + contentId + ", Retry getAccommodationDetailInfo...");
@@ -298,6 +307,8 @@ public class UrlService {
                             .retryWhen(Retry.backoff(100, Duration.ofMillis(1000)));
                 });
     }
+
+
 
     private String extractUrlFromHtml(String address) {
         if (address.startsWith("<a href=\"")) {

@@ -46,8 +46,6 @@ public class ApiSaveService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(AccommodationDetailInfo::contentid));
 
-        List<Accommodation> accommodations = new ArrayList<>();
-
         for (AccommodationCommon common : accommodationCommons) {
 
             if (common == null) {
@@ -67,8 +65,8 @@ public class ApiSaveService {
 
             }
         }
-        accommodationRepository.saveAll(accommodations);
     }
+
 
     private Accommodation toAccommodationEntity(AccommodationCommon common, AccommodationIntro intro) {
         return Accommodation.builder()
@@ -98,7 +96,6 @@ public class ApiSaveService {
     }
 
     private Room saveRoomAndImages(AccommodationDetailInfo detailInfo, Accommodation accommodation) {
-        System.out.println(detailInfo);
         Room room = Room.builder()
                 .accommodation(accommodation)
                 .name(detailInfo.roomtitle())
@@ -142,6 +139,5 @@ public class ApiSaveService {
                 .imageUrl(roomImage.imageUrl())
                 .build();
     }
-
 
 }

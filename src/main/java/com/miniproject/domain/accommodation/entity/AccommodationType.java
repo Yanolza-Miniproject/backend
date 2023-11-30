@@ -35,4 +35,13 @@ public enum AccommodationType {
         throw new IllegalArgumentException("No AccommodationType with code " + code);
     }
 
+    public static AccommodationType fromIndex(Integer index) {
+        for (AccommodationType type : AccommodationType.values()) {
+            if (type.getIndex() == index) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No AccommodationType with code " + index);
+    }
+
 }

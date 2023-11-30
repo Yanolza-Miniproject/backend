@@ -40,7 +40,7 @@ public class PaymentService {
     }
 
     public List<PaymentResponseDto> getPayments(Integer page, Integer pageSize, Member member) {
-        Page<Payment> allByMemberContaining = paymentRepository.findAllByMemberContaining(
+        Page<Payment> allByMemberContaining = paymentRepository.findAllByMember(
             PageRequest.of(page - 1, pageSize), member);
         return allByMemberContaining.stream()
             .map(payment -> new PaymentResponseDto(payment))
@@ -52,6 +52,7 @@ public class PaymentService {
         payment.completePayment();
 
         List<RoomInBasket> roomInBaskets = new ArrayList<>();
+
         List<Room> rooms = payment.getOrders().getRoomInOrders().stream().map(
             roomInOrders -> roomInOrders.getRoom()).collect(Collectors.toList());
         List<RoomInOrders> roomInOrders = payment.getOrders().getRoomInOrders();
@@ -84,6 +85,7 @@ public class PaymentService {
                 roomInBaskets.add(roomInBasket);
             }
         }
+        activateBasket.clearBasket();
 
         roomInBasketRepository.deleteAll(roomInBaskets);
     }

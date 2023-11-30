@@ -113,7 +113,7 @@ class JwtServiceTest {
     @Nested
     class Context_refreshAccessToken {
 
-        @DisplayName("accessToken, refreshToken이 정확히 일치해야 재발급 받을 수 있다.")
+        @DisplayName("DB에 저장된 내용과 refreshToken이 정확히 일치해야 재발급 받을 수 있다.")
         @Test
         void memberId_accessToken_refreshToken_isEquals_willSuccess() {
 
@@ -124,7 +124,7 @@ class JwtServiceTest {
 
             // when
             JwtPair refreshedJwtPair = jwtService.refreshAccessToken(
-                    new RefreshTokenRequest(tokenPair.accessToken(), tokenPair.refreshToken()));
+                    new RefreshTokenRequest(tokenPair.refreshToken()));
 
             // then
             assertEquals(refreshedJwtPair.refreshToken(), tokenPair.refreshToken());
@@ -143,7 +143,7 @@ class JwtServiceTest {
 
             // when then
             assertThrows(TokenExpiredException.class, () -> jwtService.refreshAccessToken(
-                    new RefreshTokenRequest(tokenPair.accessToken(), tokenPair.refreshToken())));
+                    new RefreshTokenRequest(tokenPair.refreshToken())));
         }
 
 //        @DisplayName("가장 최근에 발급된 accessToken이 아니면 실패한다.")

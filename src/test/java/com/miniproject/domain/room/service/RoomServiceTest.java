@@ -1,4 +1,4 @@
-package com.miniproject.room.service;
+package com.miniproject.domain.room.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,6 +19,7 @@ import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import com.miniproject.domain.room.repository.RoomInOrdersRepository;
 import com.miniproject.domain.room.repository.RoomRepository;
 import com.miniproject.domain.room.service.RoomService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -51,8 +52,8 @@ public class RoomServiceTest {
     public void creatRoomInBasket_willSuccess() {
         //given
         RoomRegisterRequestDto dto = RoomRegisterRequestDto.builder()
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2).build();
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -71,8 +72,8 @@ public class RoomServiceTest {
         given(basketService.getActivateBasket(any())).willReturn(basket);
         RoomInBasket roomInBasket = RoomInBasket.builder()
             .id(1L)
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2)
             .room(room)
             .member(member)
@@ -92,8 +93,8 @@ public class RoomServiceTest {
     public void createSingleOrders_willSuccess() {
         //given
         RoomRegisterRequestDto dto = RoomRegisterRequestDto.builder()
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2).build();
         Member member = Member.builder()
             .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();

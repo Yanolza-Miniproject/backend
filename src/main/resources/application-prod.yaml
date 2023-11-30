@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://fmini-project-db.ctungrqk7z5j.ap-northeast-2.rds.amazonaws.com:3306/mini
+    username: admin
+    password: rjrldjEo
+
+  jpa:
+    hibernate:
+      show-sql: true
+#      none으로 변경 예정
+      ddl-auto: create
+    jdbc:
+      time_zone: Asia/Seoul
