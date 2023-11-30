@@ -1,11 +1,9 @@
 package com.miniproject.domain.room.dto;
 
 import com.miniproject.domain.room.entity.Room;
-import com.miniproject.domain.room.entity.RoomImage;
 import lombok.Builder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Builder
 public record RoomDTO(
@@ -20,7 +18,8 @@ public record RoomDTO(
         Boolean categoryRefrigerator,
         Boolean categoryBathingFacilities,
         Boolean categoryDryer,
-        List<RoomImageDTO> roomImages
+        List<RoomImageDTO> roomImages,
+        List<RoomInventoryDTO> roomInventories
 ) {
 
     public static RoomDTO fromEntity(Room entity) {
@@ -28,6 +27,11 @@ public record RoomDTO(
         List<RoomImageDTO> roomImages = entity.getRoomImages()
                 .stream()
                 .map(RoomImageDTO::fromEntity)
+                .toList();
+
+        List<RoomInventoryDTO> roomInventories = entity.getRoomInventories()
+                .stream()
+                .map(RoomInventoryDTO::fromEntity)
                 .toList();
 
         return RoomDTO.builder()
@@ -43,6 +47,7 @@ public record RoomDTO(
                 .categoryBathingFacilities(entity.isCategoryBathingFacilities())
                 .categoryDryer(entity.isCategoryDryer())
                 .roomImages(roomImages)
+                .roomInventories(roomInventories)
                 .build();
     }
 }
