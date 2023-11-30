@@ -35,6 +35,8 @@ public class AccommodationController {
         );
     }
 
+    // 타입 추가하기
+
     // 숙소 전체 조회 + 필터링
     // 주차, 조리, 픽업, 지역(일단 도, 특별시 기준)
     @GetMapping
@@ -43,6 +45,7 @@ public class AccommodationController {
             @RequestParam(required = false, name = "category-parking") Integer categoryParking,
             @RequestParam(required = false, name = "category-cooking") Integer categoryCooking,
             @RequestParam(required = false, name = "category-pickup") Integer categoryPickup,
+            @RequestParam(required = false, name = "type") Integer type,
             @RequestParam(required = false, name = "wish-count") Integer wishCount,
             @RequestParam(required = false, name = "region01") Integer region01,
             @SecurityContext LoginInfo loginInfo
@@ -57,6 +60,7 @@ public class AccommodationController {
                         categoryParking,
                         categoryCooking,
                         categoryPickup,
+                        type,
                         wishCount,
                         region01,
                         loginInfo);

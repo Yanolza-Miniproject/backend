@@ -10,6 +10,7 @@ public interface AccommodationRepositoryCustom {
                                        Integer categoryParking,
                                        Integer categoryCooking,
                                        Integer categoryPickup,
+                                       Integer type,
                                        Integer wishCount,
                                        String region01);
 

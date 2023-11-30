@@ -1,6 +1,7 @@
 package com.miniproject.domain.accommodation.repository;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.entity.QAccommodation;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
@@ -19,6 +20,7 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
                                               Integer categoryParking,
                                               Integer categoryCooking,
                                               Integer categoryPickup,
+                                              Integer type,
                                               Integer wishCount,
                                               String region01) {
 
@@ -33,6 +35,10 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
         }
         if (categoryPickup != null && categoryPickup == 1) {
             booleanBuilder.and(accommodation.categoryPickup.isTrue());
+        }
+        if (type != null) {
+            AccommodationType accommodationType = AccommodationType.fromIndex(type);
+            booleanBuilder.and(accommodation.type.eq(accommodationType));
         }
         if (wishCount != null && wishCount >= 0) {
             booleanBuilder.and(accommodation.wishCount.goe(wishCount));

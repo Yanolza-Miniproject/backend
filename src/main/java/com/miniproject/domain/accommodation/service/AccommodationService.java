@@ -4,6 +4,7 @@ import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResp
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
+import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.room.entity.Room;
@@ -59,6 +60,7 @@ public class AccommodationService {
                                                                Integer categoryParking,
                                                                Integer categoryCooking,
                                                                Integer categoryPickup,
+                                                               Integer type,
                                                                Integer wishCount,
                                                                Integer region01,
                                                                LoginInfo loginInfo) {
@@ -70,7 +72,7 @@ public class AccommodationService {
         }
 
         Page<Accommodation> result = accommodationRepository
-                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, wishCount, region);
+                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, type, wishCount, region);
 
         List<Long> likedAccommodationIds;
 

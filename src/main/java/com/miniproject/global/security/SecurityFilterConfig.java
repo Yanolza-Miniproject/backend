@@ -1,9 +1,8 @@
 package com.miniproject.global.security;
 
 import com.miniproject.global.config.JwtAuthenticationEntryPoint;
-import com.miniproject.global.security.login.CustomLoginFilter;
 import com.miniproject.global.security.jwt.JwtAuthenticationFilter;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import com.miniproject.global.security.login.CustomLoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
@@ -47,6 +45,7 @@ public class SecurityFilterConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/members/join"), new AntPathRequestMatcher("/api/v1/members/login")
                         ,new AntPathRequestMatcher("/api/v1/refresh")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/rooms"), new AntPathRequestMatcher("/api/v1/rooms/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/openapi"), new AntPathRequestMatcher("/api/v1/openapi/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/rooms/{room_id}/orders")).authenticated()
                         .anyRequest().authenticated()
         );
