@@ -1,4 +1,4 @@
-package com.miniproject.room.controller;
+package com.miniproject.domain.room.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,20 +9,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miniproject.domain.member.entity.Member;
+import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.room.controller.RoomController;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
 import com.miniproject.domain.room.service.RoomService;
+import com.miniproject.global.config.CustomHttpHeaders;
+import com.miniproject.global.jwt.JwtPayload;
+import com.miniproject.global.jwt.service.JwtService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(RoomController.class)
+//@WebMvcTest(RoomController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class RoomControllerTest {
 
     @Autowired
@@ -30,9 +43,35 @@ public class RoomControllerTest {
 
     @MockBean
     private RoomService roomService;
+    @MockBean
+    private MemberService memberService;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private JwtService jwtService;
+
+    private Member member;
+    private HttpHeaders testAuthHeaders;
+
+    private HttpHeaders createTestAuthHeader(String email) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(
+            CustomHttpHeaders.ACCESS_TOKEN,
+            jwtService.createTokenPair(new JwtPayload(email, new Date())).accessToken()
+        );
+        return headers;
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        Member member = Member.builder()
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+        testAuthHeaders = createTestAuthHeader(member.getEmail());
+    }
+
+
 
     @DisplayName("createSingleOrders()은 바로 객실 구매를 진행 할 수 있다.")
     @Test
@@ -40,8 +79,8 @@ public class RoomControllerTest {
     public void createSingleOrders_willSuccess() throws Exception {
         //given
         RoomRegisterRequestDto dto = RoomRegisterRequestDto.builder()
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2).build();
 
         String content = objectMapper.writeValueAsString(dto);
@@ -51,7 +90,8 @@ public class RoomControllerTest {
         mockMvc.perform(post("/api/v1/rooms/{room_id}/orders", 1L)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(csrf()))
+                .with(csrf())
+                .headers(testAuthHeaders))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.message").value("객실 구매가 진행됩니다."))
             .andExpect(jsonPath("$.data").value(1L));

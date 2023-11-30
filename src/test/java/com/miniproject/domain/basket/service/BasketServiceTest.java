@@ -1,4 +1,4 @@
-package com.miniproject.basket.service;
+package com.miniproject.domain.basket.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,10 +17,12 @@ import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.orders.entity.Orders;
 import com.miniproject.domain.orders.repository.OrdersRepository;
 import com.miniproject.domain.room.entity.Room;
+import com.miniproject.domain.room.entity.RoomImage;
 import com.miniproject.domain.room.entity.RoomInBasket;
 import com.miniproject.domain.room.entity.RoomInOrders;
 import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import com.miniproject.domain.room.repository.RoomInOrdersRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +73,14 @@ public class BasketServiceTest {
             .capacity(2)
             .inventory(10)
             .build();
+        RoomImage roomImage = RoomImage.builder()
+            .room(room)
+            .imageUrl("323dsfsdf")
+            .id(1L).build();
         RoomInBasket roomInBasket = RoomInBasket.builder()
             .member(member)
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2)
             .room(room)
             .basket(basket)
@@ -140,8 +146,8 @@ public class BasketServiceTest {
         RoomInBasket roomInBasket = RoomInBasket.builder()
             .id(1L)
             .member(member)
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2)
             .room(room)
             .basket(basket)
@@ -163,7 +169,6 @@ public class BasketServiceTest {
             .room(roomInBasket.getRoom())
             .member(member)
             .orders(orders)
-            .roomInBasket(roomInBasket)
             .build();
         roomInOrdersList.add(roomInOrders);
 

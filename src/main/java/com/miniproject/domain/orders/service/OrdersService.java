@@ -8,6 +8,9 @@ import com.miniproject.domain.orders.exception.OrdersNotFoundException;
 import com.miniproject.domain.orders.repository.OrdersRepository;
 import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.payment.repository.PaymentRepository;
+import com.miniproject.domain.room.entity.RoomInOrders;
+import com.miniproject.domain.room.repository.RoomInOrdersRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,8 @@ public class OrdersService {
     private final OrdersRepository ordersRepository;
 
     private final PaymentRepository paymentRepository;
+
+    private final RoomInOrdersRepository roomInOrdersRepository;
 
 
 
@@ -39,8 +44,9 @@ public class OrdersService {
 
     public void deleteOrders(Long ordersId, Member member) {
         Orders orders = getOrders(ordersId, member);
+        List<RoomInOrders> roomInOrders = orders.getRoomInOrders();
+        roomInOrdersRepository.deleteAll(roomInOrders);
         ordersRepository.delete(orders);
-
     }
 
     public Orders getOrders(Long orderId, Member member) {

@@ -49,7 +49,9 @@ public class BasketService {
             RoomInBasket roomInBasket = roomInBasketRepository.findById(id)
                 .orElseThrow(RoomInBasketNotFoundException::new);
             roomInBasketRepository.delete(roomInBasket);
+            basket.deleteRoom(roomInBasket);
         }
+
     }
 
 

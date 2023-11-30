@@ -1,4 +1,4 @@
-package com.miniproject.orders.controller;
+package com.miniproject.domain.orders.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -10,23 +10,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.miniproject.domain.member.entity.Member;
+import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.orders.controller.OrdersController;
 import com.miniproject.domain.orders.dto.response.OrdersResponseDto;
 import com.miniproject.domain.orders.service.OrdersService;
 import com.miniproject.domain.payment.service.PaymentService;
 import com.miniproject.domain.room.dto.response.RoomInOrdersGetResponseDto;
+import com.miniproject.global.config.CustomHttpHeaders;
+import com.miniproject.global.jwt.JwtPayload;
+import com.miniproject.global.jwt.service.JwtService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(OrdersController.class)
+//@WebMvcTest(OrdersController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class OrdersControllerTest {
 
     @Autowired
@@ -35,6 +48,29 @@ public class OrdersControllerTest {
     private OrdersService ordersService;
     @MockBean
     private PaymentService paymentService;
+    @MockBean
+    private MemberService memberService;
+    @Autowired
+    private JwtService jwtService;
+
+    private Member member;
+    private HttpHeaders testAuthHeaders;
+
+    private HttpHeaders createTestAuthHeader(String email) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(
+            CustomHttpHeaders.ACCESS_TOKEN,
+            jwtService.createTokenPair(new JwtPayload(email, new Date())).accessToken()
+        );
+        return headers;
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        Member member = Member.builder()
+            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+        testAuthHeaders = createTestAuthHeader(member.getEmail());
+    }
 
     @DisplayName("getOrder()는 주문 상세 조회를 할 수 있다.")
     @Test
@@ -48,8 +84,8 @@ public class OrdersControllerTest {
             .roomName("스탠다드")
             .price(50000)
             .numberOfGuests(2)
-            .checkInAt(LocalDateTime.now())
-            .checkOutAt(LocalDateTime.now().withDayOfMonth(30))
+            .checkInAt(LocalDate.now())
+            .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .roomUrl("www.feafafsadf.jpg")
             .build();
         dtoList.add(dto);
@@ -59,7 +95,8 @@ public class OrdersControllerTest {
         when(ordersService.getOrder(anyLong(), any())).thenReturn(ordersResponseDto);
         //when, then
         mockMvc.perform(get("/api/v1/orders/{orders_id}", 1L)
-                .with(csrf()))
+                .with(csrf())
+                .headers(testAuthHeaders))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("주문 상세 조회 완료"))
             .andExpect(jsonPath("$.data.id").isNumber())
@@ -75,8 +112,9 @@ public class OrdersControllerTest {
         //given
         when(ordersService.registerPayment(anyLong(),any())).thenReturn(1L);
         //when, then
-        mockMvc.perform(post("/api/v1/orders/{orders_id}/payment",1L)
-                .with(csrf()))
+        mockMvc.perform(post("/api/v1/orders/{orders_id}/payments",1L)
+                .with(csrf())
+                .headers(testAuthHeaders))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.message").value("결제 완료"))
             .andExpect(jsonPath("$.data").value(1L))

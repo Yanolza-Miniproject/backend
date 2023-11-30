@@ -31,7 +31,7 @@ public class RoomInBasketGetResponseDto {
         this.numberOfGuests = room.getNumberOfGuests();
         this.checkInAt = room.getCheckInAt();
         this.checkOutAt = room.getCheckOutAt();
-        if (!room.getRoom().getRoomImages().isEmpty()) {
+        if (room.getRoom().getRoomImages() != null && !room.getRoom().getRoomImages().isEmpty()) {
             this.roomUrl = room.getRoom().getRoomImages().get(0).getImageUrl();
         }
     }
