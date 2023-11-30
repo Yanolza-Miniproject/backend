@@ -146,20 +146,5 @@ class JwtServiceTest {
                     new RefreshTokenRequest(tokenPair.refreshToken())));
         }
 
-//        @DisplayName("가장 최근에 발급된 accessToken이 아니면 실패한다.")
-//        @Test
-//        void accessToken_notEquals_willThrow_BadTokenException() {
-//
-//            // given
-//            JwtPayload jwtPayload = new JwtPayload("test@email.com", new Date(System.currentTimeMillis()));
-//            JwtPayload latestJwtPayload = new JwtPayload("test@email.com", new Date(System.currentTimeMillis() + 10000));
-//
-//            TokenPair tokenPair = jwtService.createTokenPair(jwtPayload);
-//            TokenPair latestTokenPair = jwtService.createTokenPair(latestJwtPayload);
-//
-//            // when then
-//            assertThrows(BadTokenException.class, () -> jwtService.refreshAccessToken(
-//                    new RefreshTokenRequest(tokenPair.accessToken(), latestTokenPair.refreshToken())));
-//        }
     }
 }

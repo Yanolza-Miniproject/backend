@@ -89,9 +89,11 @@ public class OrdersControllerTest {
             .roomUrl("www.feafafsadf.jpg")
             .build();
         dtoList.add(dto);
+
         OrdersResponseDto ordersResponseDto =
             OrdersResponseDto.builder().id(1L).totalPrice(50000).totalCount(2)
             .rooms(dtoList).build();
+
         when(ordersService.getOrder(anyLong(), any())).thenReturn(ordersResponseDto);
         //when, then
         mockMvc.perform(get("/api/v1/orders/{orders_id}", 1L)
