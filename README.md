@@ -46,7 +46,8 @@
 
 <h2>EER (논리적 모델링)</h2>
 
-![Screen Shot 2023-11-30 at 4 12 08 PM](https://github.com/meena2003/inflearn_spring/assets/85631282/d2a9ca52-ba52-479a-bc4c-b05c1f66e02e)
+![Screen Shot 2023-11-30 at 4 25 33 PM](https://github.com/CodeLab4/lab4_algorithm_java/assets/85631282/71fc9645-65e1-42c7-8a80-55dfccc4050b)
+
 
 <h2>패키지 구조</h2>
 
