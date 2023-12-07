@@ -11,7 +11,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,22 +40,22 @@ public class Basket {
         this.totalCount = 0;
         this.member = member;
     }
-    public Basket(Member member){
+    public Basket(Member member) {
         this.totalPrice = 0;
         this.totalCount = 0;
         this.member = member;
     }
 
-
-
-    public void RegisterRoom(RoomInBasket roomInBasket) {
+    public void registerRoom (RoomInBasket roomInBasket) {
         this.rooms.add(roomInBasket);
         this.totalPrice += roomInBasket.getRoom().getPrice();
         this.totalCount +=1;
     }
-    public void deleteRoom(RoomInBasket roomInBasket){
-        this.totalPrice -= roomInBasket.getRoom().getPrice();
-        this.totalCount -=1;
+    public void deleteRoom(List<RoomInBasket> roomInBasketList){
+        for (RoomInBasket roomInBasket : roomInBasketList) {
+            this.totalPrice -= roomInBasket.getRoom().getPrice();
+        }
+        this.totalCount -= roomInBasketList.size();
     }
     public void clearBasket(){
         this.totalPrice = 0;
