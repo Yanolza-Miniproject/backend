@@ -27,7 +27,7 @@ public class Payment {
 
     private PaymentStatus paymentStatus;
     @OneToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "orders_id")
     private Orders orders;
 
     @ManyToOne

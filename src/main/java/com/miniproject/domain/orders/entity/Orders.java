@@ -1,8 +1,6 @@
 package com.miniproject.domain.orders.entity;
 
-import com.miniproject.domain.basket.entity.Basket;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.room.entity.RoomInBasket;
 import com.miniproject.domain.room.entity.RoomInOrders;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +54,6 @@ public class Orders {
         this.roomInOrders.add(roomInOrders);
     }
     public void registerRooms(List<RoomInOrders> roomInOrders) {
-        for (RoomInOrders roomInOrder : roomInOrders) {
-            this.roomInOrders.add(roomInOrder);
-        }
+        this.roomInOrders.addAll(roomInOrders);
     }
 }

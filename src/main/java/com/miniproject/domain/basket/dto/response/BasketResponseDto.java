@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class BasketResponseDto {
+
     private Long id;
     private int totalPrice;
     private int totalCount;
@@ -20,19 +21,19 @@ public class BasketResponseDto {
 
     @Builder
     public BasketResponseDto(Long id, int totalPrice, int totalCount
-            , List<RoomInBasketGetResponseDto> rooms) {
+        , List<RoomInBasketGetResponseDto> rooms) {
         this.id = id;
         this.totalPrice = totalPrice;
         this.totalCount = totalCount;
         this.rooms = rooms;
     }
 
-    public BasketResponseDto (Basket basket) {
+    public BasketResponseDto(Basket basket) {
         this.id = basket.getId();
         this.totalPrice = basket.getTotalPrice();
         this.totalCount = basket.getTotalCount();
         this.rooms = basket.getRooms().stream().map(
-                        roomInBasket -> new RoomInBasketGetResponseDto(roomInBasket))
-                .collect(Collectors.toList());
+                RoomInBasketGetResponseDto::new)
+            .toList();
     }
 }
