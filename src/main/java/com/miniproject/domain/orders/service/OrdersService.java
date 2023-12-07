@@ -45,7 +45,7 @@ public class OrdersService {
     public void deleteOrders(Long ordersId, Member member) {
         Orders orders = getOrders(ordersId, member);
         List<RoomInOrders> roomInOrders = orders.getRoomInOrders();
-        roomInOrdersRepository.deleteAll(roomInOrders);
+        roomInOrdersRepository.deleteAllInBatch(roomInOrders);
         ordersRepository.delete(orders);
     }
 
