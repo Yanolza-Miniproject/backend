@@ -21,7 +21,6 @@ public enum ErrorCode {
     //장바구니 상품
     ROOM_IN_BASKET_NOT_FOUND(HttpStatus.NOT_FOUND,"장바구니에 담겨있지 않은 객실입니다."),
     //장바구니
-    BASKET_DUPLICATE_ACTIVATE(HttpStatus.NOT_ACCEPTABLE,"활성화 된 장바구니가 두 개 이상입니다."),
     BASKET_EMPTY(HttpStatus.NO_CONTENT, "장바구니가 비었습니다."),
 
     //주문
