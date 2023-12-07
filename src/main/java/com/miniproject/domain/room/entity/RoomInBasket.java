@@ -44,7 +44,9 @@ public class RoomInBasket {
     @JoinColumn(name = "room_id")
     private Room room;
 
-
+    public void changeBasket(Basket basket) {
+        this.basket = basket;
+    }
 
     @Builder
     public RoomInBasket(Long id, LocalDate checkInAt, LocalDate checkOutAt,

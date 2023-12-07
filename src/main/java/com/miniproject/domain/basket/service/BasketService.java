@@ -14,6 +14,7 @@ import com.miniproject.domain.room.exception.RoomInBasketNotFoundException;
 import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import com.miniproject.domain.room.repository.RoomInOrdersRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,10 +91,24 @@ public class BasketService {
         return switch (nowBasket.size()) {
             case 1 -> nowBasket.get(0);
             case 0 -> basketRepository.save(new Basket(member));
-            default -> {
-                basketRepository.deleteAllInBatch(nowBasket);
-                yield basketRepository.save(new Basket(member));
-            }
+            default -> deleteBasket(nowBasket,member);
         };
+    }
+
+    public Basket deleteBasket(List<Basket> basketList,Member member){
+        List<RoomInBasket> roomInBasketList = new ArrayList<>();
+        for (Basket basket : basketList) {
+            List<RoomInBasket> byBasket = roomInBasketRepository.findByBasket(basket);
+            roomInBasketList.addAll(byBasket);
+        }
+
+        Basket savedBasket = basketRepository.save(new Basket(member));
+
+        for (RoomInBasket roomInBasket : roomInBasketList) {
+            roomInBasket.changeBasket(savedBasket);
+        }
+        basketRepository.deleteAllInBatch(basketList);
+
+        return savedBasket;
     }
 }
