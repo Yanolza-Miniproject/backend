@@ -92,7 +92,7 @@ public class ApiSaveService {
         List<Room> rooms = detailInfos.stream()
                 .map(detailInfo -> saveRoomAndImages(detailInfo, accommodation))
                 .toList();
-
+//        System.out.println(rooms.size() + "개의 객실이 저장되었습니다.");
     }
 
     private Room saveRoomAndImages(AccommodationDetailInfo detailInfo, Accommodation accommodation) {

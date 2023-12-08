@@ -3,11 +3,13 @@ package com.miniproject.domain.accommodation.exception;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class AccommodationControllerAdvice {
 
+    @ExceptionHandler
     public ResponseEntity<ResponseDTO<Object>> accommodationNotFoundException(
             AccommodationNotFoundException e
     ) {

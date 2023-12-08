@@ -4,7 +4,6 @@ import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResp
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
-import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.room.entity.Room;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,8 +43,7 @@ public class AccommodationService {
 
         boolean isWished = false;
 
-        if(loginInfo.username() != "anonymousUser") {
-            // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
+        if(!Objects.equals(loginInfo.username(), "anonymousUser")) {
             List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
             if (likedAccommodationIds.contains(accommodation.getId())) {
                 isWished = true;
@@ -54,7 +53,6 @@ public class AccommodationService {
         return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
     }
 
-    // 동적 쿼리가 필요한 기능이므로 querydsl 사용이 추천됨
     @Transactional
     public Page<AccommodationSimpleResponse> getAccommodations(Pageable pageable,
                                                                Integer categoryParking,
@@ -76,7 +74,7 @@ public class AccommodationService {
 
         List<Long> likedAccommodationIds;
 
-        if(loginInfo.username() != "anonymousUser") {
+        if(!Objects.equals(loginInfo.username(), "anonymousUser")) {
             likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
         } else {
             likedAccommodationIds = new ArrayList<>();
@@ -92,7 +90,7 @@ public class AccommodationService {
 
             boolean isWished = false;
 
-            if (loginInfo.username() != "anonymousUser" && likedAccommodationIds.contains(accommodation.getId())) {
+            if (!Objects.equals(loginInfo.username(), "anonymousUser") && likedAccommodationIds.contains(accommodation.getId())) {
                 isWished = true;
             }
 
