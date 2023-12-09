@@ -52,7 +52,7 @@ public class OrdersService {
     public Orders getOrders(Long orderId, Member member) {
         Orders orders = ordersRepository.findById(orderId)
             .orElseThrow(OrdersNotFoundException::new);
-        if (!member.getId().equals(orders.getMember().getId())) {
+        if (!member.equals(orders.getMember())) {
             throw new MemberUnAuthorizedException();
         }
         return orders;
