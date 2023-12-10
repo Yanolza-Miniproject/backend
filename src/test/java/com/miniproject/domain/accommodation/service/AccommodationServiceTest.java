@@ -1,22 +1,15 @@
 package com.miniproject.domain.accommodation.service;
 
 import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
-import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
-import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
-import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomImage;
 import com.miniproject.domain.room.entity.RoomInventory;
 import com.miniproject.domain.wish.service.WishService;
-import com.miniproject.global.config.CustomHttpHeaders;
-import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.resolver.LoginInfo;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
