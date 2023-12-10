@@ -1,27 +1,16 @@
 package com.miniproject.global.jwt.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-
 import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.refresh.entity.RefreshToken;
 import com.miniproject.domain.refresh.repository.RefreshTokenRepository;
 import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.jwt.api.RefreshTokenRequest;
-import com.miniproject.global.jwt.exception.BadTokenException;
 import com.miniproject.global.jwt.exception.TokenExpiredException;
-import com.miniproject.global.jwt.service.JwtService;
-import com.miniproject.global.jwt.service.TokenPair;
 import com.miniproject.global.security.jwt.JwtPair;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.util.Date;
-import javax.crypto.SecretKey;
-
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -32,21 +21,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
 class JwtServiceTest {
 
+    private final SecretKey secretKey;
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
-    private final SecretKey secretKey;
 
     public JwtServiceTest(@Value("${service.jwt.secret-key}") String secretKey) {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
@@ -62,7 +55,7 @@ class JwtServiceTest {
 
             // given
             Date date = new Date();
-            JwtPayload jwtPayload = new JwtPayload("test@email.com", date );
+            JwtPayload jwtPayload = new JwtPayload("test@email.com", date);
 
             // when
             TokenPair tokenPair = jwtService.createTokenPair(jwtPayload);
@@ -72,7 +65,6 @@ class JwtServiceTest {
 
             assertDoesNotThrow(() -> parser.parseSignedClaims(tokenPair.accessToken()));
             assertDoesNotThrow(() -> parser.parseSignedClaims(tokenPair.refreshToken()));
-
 
 
             String expectSavedTokenValue = tokenPair.refreshToken();
@@ -111,6 +103,7 @@ class JwtServiceTest {
 
     @DisplayName("accessToken 재발급은")
     @Nested
+    @Transactional
     class Context_refreshAccessToken {
 
         @DisplayName("DB에 저장된 내용과 refreshToken이 정확히 일치해야 재발급 받을 수 있다.")
@@ -144,6 +137,28 @@ class JwtServiceTest {
             // when then
             assertThrows(TokenExpiredException.class, () -> jwtService.refreshAccessToken(
                     new RefreshTokenRequest(tokenPair.refreshToken())));
+        }
+
+        @DisplayName("refreshToken을 재발급할 때 기간이 만료된 refreshToken들은 삭제된다.")
+        @Test
+        void reissuingRefreshToken_deletesExpiredRefreshTokens() {
+
+            // given
+            JwtPayload jwtPayload = new JwtPayload("test@email.com", new Date());
+            TokenPair tokenPair = jwtService.createTokenPair(jwtPayload);
+
+            var expiredTokenId = refreshTokenRepository.save(
+                    RefreshToken.builder()
+                            .memberEmail("test2@email.com")
+                            .token("기간이만료된 토큰입니다.")
+                            .expiryDate(LocalDateTime.of(2000, 12, 12, 12, 12))
+                            .build()).getId();
+
+            // when then
+            jwtService.refreshAccessToken(new RefreshTokenRequest(tokenPair.refreshToken()));
+            refreshTokenRepository.deleteRefreshTokensByExpiryDateBefore(LocalDateTime.now());
+
+            assertThrows(NoSuchElementException.class, () -> refreshTokenRepository.findById(expiredTokenId).get());
         }
 
     }
