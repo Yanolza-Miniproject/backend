@@ -50,12 +50,12 @@ public class WishService {
     }
 
     private void validateWishNotExist(Accommodation accommodation, Member member) {
-        if (isAlreadyWish(accommodation, member)) {
+        if (isWishExist(accommodation, member)) {
             throw new AlreadyWishException();
         }
     }
 
-    private boolean isAlreadyWish(Accommodation accommodation, Member member) {
+    private boolean isWishExist(Accommodation accommodation, Member member) {
         return wishRepository.findByMemberAndAccommodation(member, accommodation).isPresent();
     }
 
