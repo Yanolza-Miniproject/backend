@@ -1,6 +1,5 @@
 package com.miniproject.domain.wish.controller;
 
-import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.wish.service.WishService;
 import com.miniproject.global.resolver.LoginInfo;
 import com.miniproject.global.resolver.SecurityContext;
