@@ -12,6 +12,6 @@ public interface AccommodationRepositoryCustom {
                                        Integer categoryPickup,
                                        Integer type,
                                        Integer wishCount,
-                                       String region01);
+                                       String region);
 
 }

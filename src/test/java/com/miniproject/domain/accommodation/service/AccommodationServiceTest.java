@@ -1,5 +1,6 @@
 package com.miniproject.domain.accommodation.service;
 
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
@@ -97,8 +98,9 @@ class AccommodationServiceTest {
         LoginInfo loginInfo = new LoginInfo("anonymousUser");
         Pageable pageable = PageRequest.of(0, 20);
 
-        var responses =  accommodationService.getAccommodations(pageable, null, null,
-                null, null, null, null, loginInfo).getContent();
+        AccommodationRequest request = new AccommodationRequest(null, null, null, null, null, null);
+
+        var responses =  accommodationService.getAccommodations(pageable, request, loginInfo).getContent();
 
         //then
         Assertions.assertThat(responses.get(0)).extracting("id", "name")

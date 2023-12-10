@@ -1,5 +1,6 @@
 package com.miniproject.domain.accommodation.service;
 
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
@@ -45,9 +46,7 @@ public class AccommodationService {
 
         if(!Objects.equals(loginInfo.username(), "anonymousUser")) {
             List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
-            if (likedAccommodationIds.contains(accommodation.getId())) {
-                isWished = true;
-            }
+            isWished = likedAccommodationIds.contains(accommodation.getId());
         }
 
         return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
@@ -55,22 +54,23 @@ public class AccommodationService {
 
     @Transactional
     public Page<AccommodationSimpleResponse> getAccommodations(Pageable pageable,
-                                                               Integer categoryParking,
-                                                               Integer categoryCooking,
-                                                               Integer categoryPickup,
-                                                               Integer type,
-                                                               Integer wishCount,
-                                                               Integer region01,
+                                                               AccommodationRequest request,
                                                                LoginInfo loginInfo) {
 
         String region = null;
 
-        if (region01 != null) {
-            region = AccommodationRegionType.findByValue(region01).getDescription();
+        if (request.region() != null) {
+            region = AccommodationRegionType.findByValue(request.region()).getDescription();
         }
 
         Page<Accommodation> result = accommodationRepository
-                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, type, wishCount, region);
+                .findByCategory(pageable,
+                        request.categoryParking(),
+                        request.categoryCooking(),
+                        request.categoryPickup(),
+                        request.type(),
+                        request.wishCount(),
+                        region);
 
         List<Long> likedAccommodationIds;
 

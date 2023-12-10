@@ -5,10 +5,15 @@ import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.entity.QAccommodation;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+
+import java.util.function.Function;
+
+import static com.miniproject.domain.accommodation.entity.QAccommodation.accommodation;
 
 public class AccommodationRepositoryImpl extends QuerydslRepositorySupport implements AccommodationRepositoryCustom{
     public AccommodationRepositoryImpl() {
@@ -22,7 +27,7 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
                                               Integer categoryPickup,
                                               Integer type,
                                               Integer wishCount,
-                                              String region01) {
+                                              String region) {
 
         QAccommodation accommodation = QAccommodation.accommodation;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -43,8 +48,8 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
         if (wishCount != null && wishCount >= 0) {
             booleanBuilder.and(accommodation.wishCount.goe(wishCount));
         }
-        if (region01 != null && !region01.isEmpty()) {
-            booleanBuilder.and(accommodation.address.contains(region01));
+        if (region != null && !region.isEmpty()) {
+            booleanBuilder.and(accommodation.address.contains(region));
         }
 
         QueryResults<Accommodation> result = from(accommodation)
@@ -55,6 +60,14 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
 
+    }
+
+    private void addCategory(BooleanBuilder booleanBuilder,
+                             Integer value,
+                             Function<QAccommodation, BooleanExpression> category) {
+        if (value != null && value == 1) {
+            booleanBuilder.and(category.apply(accommodation));
+        }
     }
 
 }

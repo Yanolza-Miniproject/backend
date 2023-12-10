@@ -1,5 +1,6 @@
 package com.miniproject.domain.accommodation.controller;
 
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
@@ -145,7 +146,9 @@ class AccommodationControllerTest {
 
         Page<AccommodationSimpleResponse> accommodations = new PageImpl<>(responseList);
 
-        when(accommodationService.getAccommodations(any(Pageable.class), any(), any(), any(), any(), any(), any(), any())).thenReturn(accommodations);
+        AccommodationRequest request = new AccommodationRequest(null, null, null, null, null, null);
+
+        when(accommodationService.getAccommodations(any(Pageable.class), request, any())).thenReturn(accommodations);
 
         mockMvc.perform(get("/api/v1/accommodations")
                         .headers(testAuthHeaders))
