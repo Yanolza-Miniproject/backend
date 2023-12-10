@@ -14,6 +14,7 @@ import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.room.dto.RoomImageDTO;
 import com.miniproject.domain.room.dto.RoomInventoryDTO;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.dto.response.RoomDetailResponse;
 import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.entity.*;
@@ -256,10 +257,14 @@ public class RoomServiceTest {
         Page<Room> roomPage =
                 new PageImpl<>(rooms.subList(0, 1), pageRequest, rooms.size());
 
-        given(roomRepository.findByAccommodationIdAndCategory(anyLong(), any(), any(), any(), any(), any(), any(), any())).willReturn(roomPage);
+        RoomRequest request = new RoomRequest(null, null, null, null, null, null, null, null);
+
+        given(roomRepository.findByAccommodationIdAndCategory(anyLong(), any(), request)).willReturn(roomPage);
 
         // when
-        List<RoomSimpleResponse> result = roomService.getRoomsByAccommodationId(accommodation.getId(), Pageable.ofSize(20), 0, 0, 0, 0, 0, 0, LocalDate.now(), LocalDate.now());
+        RoomRequest requestWhen = new RoomRequest(0, 0, 0, 0, 0, 0, LocalDate.now(), LocalDate.now());
+
+        List<RoomSimpleResponse> result = roomService.getRoomsByAccommodationId(accommodation.getId(), Pageable.ofSize(20), requestWhen);
 
 
         // then

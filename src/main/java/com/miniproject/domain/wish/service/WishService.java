@@ -4,7 +4,6 @@ import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.member.exception.MemberNotFoundException;
 import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.wish.entity.Wish;

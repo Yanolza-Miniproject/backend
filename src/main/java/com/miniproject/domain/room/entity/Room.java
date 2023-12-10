@@ -48,23 +48,16 @@ public class Room {
     }
 
     public boolean isAvailable(LocalDate checkinDay, LocalDate checkoutDay) {
-        List<RoomInventory> inventories = getInventories(checkinDay, checkoutDay);
-        for (RoomInventory inventory : inventories) {
-            if (inventory.getInventory() <= 0) {
+        for (RoomInventory inventory : roomInventories) {
+            if (inventoryDateCheck(checkinDay, checkoutDay, inventory.getDate()) && inventory.getInventory() <= 0) {
                 return false;
             }
         }
         return true;
     }
 
-    public List<RoomInventory> getInventories(LocalDate checkinDay, LocalDate checkoutDay) {
-        List<RoomInventory> inventories = new ArrayList<>();
-        for (RoomInventory inventory : roomInventories) {
-            if ((inventory.getDate().isEqual(checkinDay) || inventory.getDate().isAfter(checkinDay)) && inventory.getDate().isBefore(checkoutDay)) {
-                inventories.add(inventory);
-            }
-        }
-        return inventories;
+    private boolean inventoryDateCheck(LocalDate checkinDay, LocalDate checkoutDay, LocalDate date) {
+        return !(date.isBefore(checkinDay) || date.isAfter(checkoutDay));
     }
 
 

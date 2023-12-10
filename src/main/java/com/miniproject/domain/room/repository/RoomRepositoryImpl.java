@@ -1,5 +1,6 @@
 package com.miniproject.domain.room.repository;
 
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.entity.QRoom;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.exception.RoomNotFoundException;
@@ -17,33 +18,28 @@ public class RoomRepositoryImpl extends QuerydslRepositorySupport implements Roo
     @Override
     public Page<Room> findByAccommodationIdAndCategory(Long accommodationId,
                                                        Pageable pageable,
-                                                       Integer categoryTv,
-                                                       Integer categoryPc,
-                                                       Integer categoryInternet,
-                                                       Integer categoryRefrigerator,
-                                                       Integer categoryBathingFacilities,
-                                                       Integer categoryDryer) {
+                                                       RoomRequest request) {
 
         QRoom room = QRoom.room;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(room.accommodation.id.eq(accommodationId));
 
-        if (categoryTv != null && categoryTv == 1) {
+        if (request.categoryTv() != null && request.categoryTv() == 1) {
             booleanBuilder.and(room.categoryTv.isTrue());
         }
-        if (categoryPc != null && categoryPc == 1) {
+        if (request.categoryPc() != null && request.categoryPc() == 1) {
             booleanBuilder.and(room.categoryPc.isTrue());
         }
-        if (categoryInternet != null && categoryInternet == 1) {
+        if (request.categoryInternet() != null && request.categoryInternet() == 1) {
             booleanBuilder.and(room.categoryInternet.isTrue());
         }
-        if (categoryRefrigerator != null && categoryRefrigerator == 1) {
+        if (request.categoryRefrigerator() != null && request.categoryRefrigerator() == 1) {
             booleanBuilder.and(room.categoryRefrigerator.isTrue());
         }
-        if (categoryBathingFacilities != null && categoryBathingFacilities == 1) {
+        if (request.categoryBathingFacilities() != null && request.categoryBathingFacilities() == 1) {
             booleanBuilder.and(room.categoryBathingFacilities.isTrue());
         }
-        if (categoryDryer != null && categoryDryer == 1) {
+        if (request.categoryDryer() != null && request.categoryDryer() == 1) {
             booleanBuilder.and(room.categoryDryer.isTrue());
         }
 

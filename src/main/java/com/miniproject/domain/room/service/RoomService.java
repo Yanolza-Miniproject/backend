@@ -6,6 +6,7 @@ import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.orders.entity.Orders;
 import com.miniproject.domain.orders.repository.OrdersRepository;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomInBasket;
 import com.miniproject.domain.room.entity.RoomInOrders;
@@ -95,31 +96,19 @@ public class RoomService {
     @Transactional
     public List<RoomSimpleResponse> getRoomsByAccommodationId(Long accommodationId,
                                                               Pageable pageable,
-                                                              Integer categoryTv,
-                                                              Integer categoryPc,
-                                                              Integer categoryInternet,
-                                                              Integer categoryRefrigerator,
-                                                              Integer categoryBathingFacilities,
-                                                              Integer categoryDryer,
-                                                              LocalDate checkinDay,
-                                                              LocalDate checkoutDay) {
+                                                              RoomRequest request) {
 
         Page<Room> result = roomRepository
                 .findByAccommodationIdAndCategory(
                         accommodationId,
                         pageable,
-                        categoryTv,
-                        categoryPc,
-                        categoryInternet,
-                        categoryRefrigerator,
-                        categoryBathingFacilities,
-                        categoryDryer);
+                        request);
 
 
 
         return result
                 .stream()
-                .filter(room -> room.isAvailable(checkinDay, checkoutDay))
+                .filter(room -> room.isAvailable(request.checkinDay(), request.checkoutDay()))
                 .map(RoomSimpleResponse::fromEntity)
                 .collect(Collectors.toList());
 
