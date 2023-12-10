@@ -29,12 +29,14 @@ public class MemberService {
     public Long signUp(SignUpRequest request) {
         validateDuplicateMember(request.email());
 
-        return memberRepository.save(Member.builder()
+        Member member = Member.builder()
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .nickname(request.nickname())
                 .phoneNumber(request.phoneNumber())
-                .build()).getId();
+                .build();
+
+        return memberRepository.save(member).getId();
     }
 
     public Member getMemberByLoginInfo(LoginInfo loginInfo){
