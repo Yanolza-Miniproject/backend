@@ -1,5 +1,6 @@
 package com.miniproject.domain.member.entity;
 
+import com.miniproject.domain.basket.entity.Basket;
 import com.miniproject.domain.orders.entity.Orders;
 import com.miniproject.domain.wish.entity.Wish;
 import jakarta.persistence.*;
@@ -19,6 +20,10 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Orders> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Basket> baskets = new ArrayList<>();
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +49,6 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.likes = likes;
         this.orders = orders;
-
     }
 
 }
