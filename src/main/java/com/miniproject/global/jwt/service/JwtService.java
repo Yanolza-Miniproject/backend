@@ -71,6 +71,7 @@ public class JwtService {
         JwtPayload jwtPayload = verifyToken(request.refreshToken());
 
         //DB에 저장된 member의 리프레시 토큰을 꺼내옴
+
         var refreshToken = refreshTokenRepository.findRefreshTokenByMemberEmail(jwtPayload.email());
 
         if (refreshToken.getToken() == null) {
@@ -84,7 +85,15 @@ public class JwtService {
 
         //새로운 액세스 토큰 발급
         String refreshedAccessToken = jwtProvider.reCreateToken(jwtPayload, accessExpiration);
+
+        deleteExpiredTokens();
+
         return new JwtPair(refreshedAccessToken, request.refreshToken());
+    }
+
+    public void deleteExpiredTokens() {
+        LocalDateTime now = LocalDateTime.now();
+        refreshTokenRepository.deleteAllExpiredSince(now);
     }
 
     public LoginResponse createLoginResponse(String email) {
