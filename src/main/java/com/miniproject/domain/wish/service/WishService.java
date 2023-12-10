@@ -72,10 +72,7 @@ public class WishService {
 
     public List<Long> getWishesOnlyAccommodationId(LoginInfo loginInfo) {
         Member member = memberService.getMemberByLoginInfo(loginInfo);
-        List<Wish> wishes = wishRepository.findAllByMember(member);
-        if (wishes.isEmpty()) {
-            throw new MemberNotFoundException();
-        }
+        List<Wish> wishes = findWishesbyMember(member);
 
         return wishes.stream()
                 .map(Wish::getAccommodation)
@@ -83,14 +80,17 @@ public class WishService {
                 .collect(Collectors.toList());
     }
 
-    public List<AccommodationWishResDto> getWishes(LoginInfo loginInfo) {
-
-        Member member = memberService.getMemberByLoginInfo(loginInfo);
-
+    private List<Wish> findWishesbyMember(Member member) {
         List<Wish> wishes = wishRepository.findAllByMember(member);
         if (wishes.isEmpty()) {
             throw new MemberNotFoundException();
         }
+        return wishes;
+    }
+
+    public List<AccommodationWishResDto> getWishes(LoginInfo loginInfo) {
+        Member member = memberService.getMemberByLoginInfo(loginInfo);
+        List<Wish> wishes = findWishesbyMember(member);
 
         return wishes.stream()
                 .map(AccommodationWishResDto::fromEntity)
