@@ -30,9 +30,7 @@ public class WishService {
     private final MemberService memberService;
 
     public Long saveWish(Long accommodationId, LoginInfo loginInfo) {
-        Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow(AccommodationNotFoundException::new);
-
+        Accommodation accommodation = findAccommodationById(accommodationId);
         Member member = memberService.getMemberByLoginInfo(loginInfo);
 
         if (isAlreadyWish(accommodation, member)) {
@@ -48,14 +46,17 @@ public class WishService {
         return saved.getId();
     }
 
+    private Accommodation findAccommodationById(Long accommodationId) {
+        return accommodationRepository.findById(accommodationId)
+                .orElseThrow(AccommodationNotFoundException::new);
+    }
+
     private boolean isAlreadyWish(Accommodation accommodation, Member member) {
         return wishRepository.findByMemberAndAccommodation(member, accommodation).isPresent();
     }
 
     public void deleteWish(Long accommodationId, LoginInfo loginInfo) {
-        Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow(AccommodationNotFoundException::new);
-
+        Accommodation accommodation = findAccommodationById(accommodationId);
         Member member = memberService.getMemberByLoginInfo(loginInfo);
 
         Wish wish = wishRepository.findByMemberAndAccommodation(member, accommodation)
@@ -66,7 +67,6 @@ public class WishService {
     }
 
     public List<Long> getWishesOnlyAccommodationId(LoginInfo loginInfo) {
-
         Member member = memberService.getMemberByLoginInfo(loginInfo);
 
         List<Wish> wishes = wishRepository.findAllByMember(member);
