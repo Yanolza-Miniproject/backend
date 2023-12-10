@@ -33,9 +33,7 @@ public class WishService {
         Accommodation accommodation = findAccommodationById(accommodationId);
         Member member = memberService.getMemberByLoginInfo(loginInfo);
 
-        if (isAlreadyWish(accommodation, member)) {
-            throw new AlreadyWishException();
-        }
+        validateWishNotExist(accommodation, member);
 
         Wish wish = Wish.builder()
                 .accommodation(accommodation)
@@ -49,6 +47,12 @@ public class WishService {
     private Accommodation findAccommodationById(Long accommodationId) {
         return accommodationRepository.findById(accommodationId)
                 .orElseThrow(AccommodationNotFoundException::new);
+    }
+
+    private void validateWishNotExist(Accommodation accommodation, Member member) {
+        if (isAlreadyWish(accommodation, member)) {
+            throw new AlreadyWishException();
+        }
     }
 
     private boolean isAlreadyWish(Accommodation accommodation, Member member) {
@@ -68,7 +72,6 @@ public class WishService {
 
     public List<Long> getWishesOnlyAccommodationId(LoginInfo loginInfo) {
         Member member = memberService.getMemberByLoginInfo(loginInfo);
-
         List<Wish> wishes = wishRepository.findAllByMember(member);
         if (wishes.isEmpty()) {
             throw new MemberNotFoundException();
