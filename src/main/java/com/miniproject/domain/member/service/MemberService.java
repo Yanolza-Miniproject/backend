@@ -10,6 +10,7 @@ import com.miniproject.global.resolver.LoginInfo;
 import com.miniproject.global.resolver.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class MemberService {
         this.jwtService = jwtService;
     }
 
+    @Transactional
     public Long signUp(SignUpRequest request) {
         validateDuplicateMember(request.email());
 
@@ -39,6 +41,7 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
+    @Transactional(readOnly = true)
     public Member getMemberByLoginInfo(LoginInfo loginInfo){
         return memberRepository.findByEmail(loginInfo.username())
             .orElseThrow(MemberNotFoundException::new);
