@@ -32,11 +32,8 @@ jobs:
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
         shell: bash
         ## gradle build
-      - name: Build chmod
-        run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew build -x test -x ktlintCheck -x ktlintTestSourceSetCheck -x ktlintMainSourceSetCheck -x ktlintKotlinScriptCheck
-
+        run: ./gradlew build
         ## docker build & push to develop
       - name: Docker build & push to dev
         if: contains(github.ref, 'develop')
