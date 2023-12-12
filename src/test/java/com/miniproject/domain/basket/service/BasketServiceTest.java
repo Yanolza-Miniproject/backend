@@ -85,7 +85,7 @@ public class BasketServiceTest {
             .room(room)
             .basket(basket)
             .member(member).build();
-        basket.RegisterRoom(roomInBasket);
+        basket.registerRoom(roomInBasket);
         given(basketRepository.findByMember(any(Member.class))).willReturn(basketList);
 
         //when
@@ -152,7 +152,7 @@ public class BasketServiceTest {
             .room(room)
             .basket(basket)
             .member(member).build();
-        basket.RegisterRoom(roomInBasket);
+        basket.registerRoom(roomInBasket);
 
         Orders orders = Orders.builder()
             .id(1L)
