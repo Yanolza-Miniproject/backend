@@ -93,7 +93,7 @@ public class PaymentService {
     public Payment getPaymentForException(Long paymentId, Member member) {
         Payment payment = paymentRepository.findById(paymentId)
             .orElseThrow(PaymentNotFoundException::new);
-        if(!member.getId().equals(payment.getOrders().getMember().getId())){
+        if(!member.getEmail().equals(payment.getOrders().getMember().getEmail())){
             throw new MemberUnAuthorizedException();
         }
         return payment;
