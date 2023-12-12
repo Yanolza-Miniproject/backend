@@ -46,11 +46,11 @@ jobs:
       ## deploy to production
       - name: Deploy to prod
         uses: appleboy/ssh-action@master
-        id: deploy-prod
+        id: deploy
         if: contains(github.ref, 'develop')
         with:
           host: ${{ secrets.HOST_PROD }}
-          username: ec2-user
+          username: ubuntu
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
