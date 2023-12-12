@@ -83,7 +83,7 @@ public class WishService {
     private List<Wish> findWishesbyMember(Member member) {
         List<Wish> wishes = wishRepository.findAllByMember(member);
         if (wishes.isEmpty()) {
-            throw new MemberNotFoundException();
+            throw new WishNotFoundException();
         }
         return wishes;
     }
