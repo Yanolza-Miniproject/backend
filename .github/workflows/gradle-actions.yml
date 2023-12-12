@@ -31,6 +31,8 @@ jobs:
           touch ./application-prod.properties
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
         shell: bash
+      - name: Build chmod
+        run: chmod +x ./gradlew
         ## gradle build
       - name: Build with Gradle
         run: ./gradlew build
