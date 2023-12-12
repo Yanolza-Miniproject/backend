@@ -45,8 +45,8 @@ public class AccommodationService {
         boolean isWished = false;
 
         if(!Objects.equals(loginInfo.username(), "anonymousUser")) {
-            List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
-            isWished = likedAccommodationIds.contains(accommodation.getId());
+            List<Long> wishedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+            isWished = wishedAccommodationIds.contains(accommodation.getId());
         }
 
         return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
