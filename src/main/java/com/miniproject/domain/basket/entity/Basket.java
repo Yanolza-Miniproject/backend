@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Basket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +28,7 @@ public class Basket {
     private int totalPrice;
     private int totalCount;
 
-    @OneToMany(mappedBy = "basket",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY)
     private List<RoomInBasket> rooms = new ArrayList<>();
 
     @ManyToOne
@@ -35,30 +36,33 @@ public class Basket {
     private Member member;
 
     @Builder
-    public Basket(Member member, Long id){
+    public Basket(Member member, Long id) {
         this.id = id;
         this.totalPrice = 0;
         this.totalCount = 0;
         this.member = member;
     }
+
     public Basket(Member member) {
         this.totalPrice = 0;
         this.totalCount = 0;
         this.member = member;
     }
 
-    public void registerRoom (RoomInBasket roomInBasket) {
+    public void registerRoom(RoomInBasket roomInBasket) {
         this.rooms.add(roomInBasket);
         this.totalPrice += roomInBasket.getRoom().getPrice();
-        this.totalCount +=1;
+        this.totalCount += 1;
     }
-    public void deleteRoom(List<RoomInBasket> roomInBasketList){
+
+    public void deleteRoom(List<RoomInBasket> roomInBasketList) {
         for (RoomInBasket roomInBasket : roomInBasketList) {
             this.totalPrice -= roomInBasket.getRoom().getPrice();
         }
         this.totalCount -= roomInBasketList.size();
     }
-    public void clearBasket(){
+
+    public void clearBasket() {
         this.totalPrice = 0;
         this.totalCount = 0;
     }

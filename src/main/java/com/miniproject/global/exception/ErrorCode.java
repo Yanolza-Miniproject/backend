@@ -19,7 +19,7 @@ public enum ErrorCode {
     //객실
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 객실입니다."),
     //장바구니 상품
-    ROOM_IN_BASKET_NOT_FOUND(HttpStatus.NOT_FOUND,"장바구니에 담겨있지 않은 객실입니다."),
+    ROOM_IN_BASKET_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니에 담겨있지 않은 객실입니다."),
     //장바구니
     BASKET_EMPTY(HttpStatus.NO_CONTENT, "장바구니가 비었습니다."),
 
