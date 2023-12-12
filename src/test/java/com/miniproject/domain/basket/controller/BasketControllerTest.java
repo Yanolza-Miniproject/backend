@@ -72,7 +72,7 @@ public class BasketControllerTest {
     @BeforeEach
     public void beforeEach() {
         Member member = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         testAuthHeaders = createTestAuthHeader(member.getEmail());
     }
 

@@ -93,7 +93,7 @@ public class JwtService {
 
     public void deleteExpiredTokens() {
         LocalDateTime now = LocalDateTime.now();
-        refreshTokenRepository.deleteAllExpiredSince(now);
+        refreshTokenRepository.deleteRefreshTokensByExpiryDateBefore(now);
     }
 
     public LoginResponse createLoginResponse(String email) {
