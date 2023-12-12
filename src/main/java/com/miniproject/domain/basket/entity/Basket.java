@@ -3,6 +3,7 @@ package com.miniproject.domain.basket.entity;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.room.entity.RoomInBasket;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ public class Basket {
     private int totalPrice;
     private int totalCount;
 
-    @OneToMany(mappedBy = "basket")
+    @OneToMany(mappedBy = "basket",fetch = FetchType.LAZY)
     private List<RoomInBasket> rooms = new ArrayList<>();
 
     @ManyToOne
