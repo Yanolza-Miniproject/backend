@@ -17,13 +17,20 @@ import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.payment.repository.PaymentRepository;
 import com.miniproject.domain.room.entity.Room;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
+
+import com.miniproject.global.config.CustomHttpHeaders;
+import com.miniproject.global.jwt.JwtPayload;
+import com.miniproject.global.jwt.service.JwtService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -35,7 +42,12 @@ public class OrderServiceTest {
     OrdersRepository ordersRepository;
 
     @Mock
+    JwtService jwtService;
+
+    @Mock
     PaymentRepository paymentRepository;
+
+
 
 
     @DisplayName("getOrders()는 주문 객체를 내보낼 수 있다.")
@@ -43,7 +55,7 @@ public class OrderServiceTest {
     public void getOrders_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -76,9 +88,9 @@ public class OrderServiceTest {
     public void getOrders_willFail() {
         //given
         Member member1 = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         Member member2 = Member.builder()
-            .id(2L).nickname("이하").email("kjf@gmail.com").password("ffdfda231321@da").build();
+            .nickname("이하").email("kjf@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -109,7 +121,7 @@ public class OrderServiceTest {
     public void getOrder_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)
@@ -142,7 +154,7 @@ public class OrderServiceTest {
     public void registerPayment_willSuccess() {
         //given
         Member member = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)

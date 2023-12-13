@@ -75,7 +75,7 @@ public class RoomServiceTest {
             .build();
         given(roomRepository.findById(anyLong())).willReturn(Optional.of(room));
         Member member = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
         Basket basket = new Basket(member, 1L);
         given(basketService.getActivateBasket(any())).willReturn(basket);
         RoomInBasket roomInBasket = RoomInBasket.builder()
@@ -105,7 +105,7 @@ public class RoomServiceTest {
             .checkOutAt(LocalDate.now().withDayOfMonth(30))
             .numberOfGuests(2).build();
         Member member = Member.builder()
-            .id(1L).nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
+            .nickname("하이").email("kj@gmail.com").password("ffdfda231321@da").build();
 
         Accommodation accommodation = Accommodation.builder()
             .id(1L)

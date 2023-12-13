@@ -72,7 +72,7 @@ class WishControllerTest {
     @BeforeEach
     public void init() {
         Member member = Member.builder()
-                .id(1L).nickname("tester").email("tester@gmail.com").password("ffdfda231321@da").build();
+                .nickname("tester").email("tester@gmail.com").password("ffdfda231321@da").build();
         testAuthHeaders = createTestAuthHeader(member.getEmail());
 
         accommodation1 = Accommodation.builder()

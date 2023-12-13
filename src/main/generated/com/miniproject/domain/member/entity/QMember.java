@@ -20,6 +20,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final ListPath<com.miniproject.domain.basket.entity.Basket, com.miniproject.domain.basket.entity.QBasket> baskets = this.<com.miniproject.domain.basket.entity.Basket, com.miniproject.domain.basket.entity.QBasket>createList("baskets", com.miniproject.domain.basket.entity.Basket.class, com.miniproject.domain.basket.entity.QBasket.class, PathInits.DIRECT2);
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
