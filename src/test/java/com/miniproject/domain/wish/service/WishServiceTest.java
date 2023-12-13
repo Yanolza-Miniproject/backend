@@ -230,7 +230,7 @@ class WishServiceTest {
             List<Wish> wishes = Arrays.asList(wish1, wish2);
 
             when(memberService.getMemberByLoginInfo(loginInfo)).thenReturn(member);
-            when(wishRepository.findAllByMember(member)).thenReturn(Optional.of(wishes));
+            when(wishRepository.findAllByMember(member)).thenReturn(wishes);
 
             AccommodationWishResDto dto1 = AccommodationWishResDto.fromEntity(wish1);
             AccommodationWishResDto dto2 = AccommodationWishResDto.fromEntity(wish2);
