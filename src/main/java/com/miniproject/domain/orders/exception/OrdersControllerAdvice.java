@@ -1,6 +1,5 @@
 package com.miniproject.domain.orders.exception;
 
-import com.miniproject.domain.basket.exception.BasketDuplicateActivateException;
 import com.miniproject.global.util.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

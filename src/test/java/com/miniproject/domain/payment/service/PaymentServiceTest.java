@@ -59,7 +59,7 @@ public class PaymentServiceTest {
 
         given(paymentRepository.findById(anyLong())).willReturn(Optional.of(payment));
         //when
-        Payment savedPayment = paymentService.getPaymentForException(1L, member);
+        Payment savedPayment = paymentService.checkGetPayment(1L, member);
         //then
         assertThat(savedPayment.getId()).isEqualTo(payment.getId());
     }

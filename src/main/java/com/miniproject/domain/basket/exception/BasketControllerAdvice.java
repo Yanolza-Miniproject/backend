@@ -10,13 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class BasketControllerAdvice {
     @ExceptionHandler
-    public ResponseEntity<ResponseDTO<Object>> basketDuplicateActivateException(
-        BasketDuplicateActivateException e) {
-        log.error(e.getMessage(), e);
-        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-            .body(ResponseDTO.res(e.getErrorCode().getMessage()));
-    }
-    @ExceptionHandler
     public ResponseEntity<ResponseDTO<Object>> basketEmptyException(
         BasketEmptyException e) {
         log.error(e.getMessage(), e);

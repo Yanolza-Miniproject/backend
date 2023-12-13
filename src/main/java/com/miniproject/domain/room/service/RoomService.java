@@ -56,7 +56,7 @@ public class RoomService {
                 .member(member)
                 .basket(activateBasket)
                 .build();
-        activateBasket.RegisterRoom(roomInBasket);
+        activateBasket.registerRoom(roomInBasket);
         return roomInBasketRepository.save(roomInBasket);
     }
 
@@ -68,19 +68,20 @@ public class RoomService {
             .orderAt(LocalDateTime.now())
             .member(member)
             .totalPrice(room.getPrice())
-            .totalCount(dto.getNumberOfGuests()).build();
-        Orders save = ordersRepository.save(orders);
+            .totalCount(dto.getNumberOfGuests())
+            .build();
+        Orders savedOrders = ordersRepository.save(orders);
         RoomInOrders roomInOrders = RoomInOrders.builder()
             .checkInAt(dto.getCheckInAt())
             .checkOutAt(dto.getCheckOutAt())
             .numberOfGuests(dto.getNumberOfGuests())
             .room(room)
             .member(member)
-            .orders(save)
+            .orders(savedOrders)
             .build();
-        save.registerRooms(roomInOrders);
+        savedOrders.registerRooms(roomInOrders);
         roomInOrdersRepository.save(roomInOrders);
-        return save.getId();
+        return savedOrders.getId();
     }
 
     @Transactional

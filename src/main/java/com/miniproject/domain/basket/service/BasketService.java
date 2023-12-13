@@ -3,7 +3,6 @@ package com.miniproject.domain.basket.service;
 import com.miniproject.domain.basket.dto.request.CheckBasketRequestDto;
 import com.miniproject.domain.basket.dto.response.BasketResponseDto;
 import com.miniproject.domain.basket.entity.Basket;
-import com.miniproject.domain.basket.exception.BasketDuplicateActivateException;
 import com.miniproject.domain.basket.exception.BasketEmptyException;
 import com.miniproject.domain.basket.repository.BasketRepository;
 import com.miniproject.domain.member.entity.Member;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,60 +38,77 @@ public class BasketService {
         return new BasketResponseDto(getActivateBasket(member));
     }
 
+
     public void deleteRoomInBasket(CheckBasketRequestDto dto,Member member) {
         Basket basket = getActivateBasket(member);
-        if (basket.getRooms().size() == 0) {
+        if (basket.getRooms().isEmpty())
             throw new BasketEmptyException();
-        }
-        for (Long id : dto.getIds()) {
-            RoomInBasket roomInBasket = roomInBasketRepository.findById(id)
-                .orElseThrow(RoomInBasketNotFoundException::new);
-            roomInBasketRepository.delete(roomInBasket);
-            basket.deleteRoom(roomInBasket);
-        }
 
+        List<RoomInBasket> roomInBasketList = dto.getIds()
+            .stream()
+            .map(id -> roomInBasketRepository.findById(id)
+                .orElseThrow(RoomInBasketNotFoundException::new))
+            .toList();
+        roomInBasketRepository.deleteAllInBatch(roomInBasketList);
+        basket.deleteRoom(roomInBasketList);
     }
-
 
     public Long registerOrder(CheckBasketRequestDto dto,Member member) {
         Basket basket = getActivateBasket(member);
-        if (basket.getRooms().size() == 0) {
+        if (basket.getRooms().isEmpty()) {
             throw new BasketEmptyException();
         }
         Orders orders = Orders.builder()
             .orderAt(LocalDateTime.now())
             .member(member)
             .totalPrice(basket.getTotalPrice())
-            .totalCount(basket.getTotalCount()).build();
-        Orders save = ordersRepository.save(orders);
-        List<RoomInOrders> roomInOrdersList = new ArrayList<>();
-        for (Long id : dto.getIds()) {
-            RoomInBasket roomInBasket = roomInBasketRepository.findById(id)
-                .orElseThrow(RoomInBasketNotFoundException::new);
-            RoomInOrders roomInOrders = RoomInOrders.builder()
+            .totalCount(basket.getTotalCount())
+            .build();
+        Orders savedOrders = ordersRepository.save(orders);
+
+        List<RoomInOrders> roomInOrdersList = dto.getIds()
+            .stream()
+            .map(id -> roomInBasketRepository.findById(id)
+                .orElseThrow(RoomInBasketNotFoundException::new))
+            .map(roomInBasket -> RoomInOrders.builder()
                 .checkInAt(roomInBasket.getCheckInAt())
                 .checkOutAt(roomInBasket.getCheckOutAt())
                 .numberOfGuests(roomInBasket.getNumberOfGuests())
                 .room(roomInBasket.getRoom())
                 .member(member)
-                .orders(save)
-                .build();
-            roomInOrdersList.add(roomInOrders);
-        }
-        save.registerRooms(roomInOrdersList);
+                .orders(savedOrders)
+                .build()).toList();
+
+        savedOrders.registerRooms(roomInOrdersList);
         roomInOrdersRepository.saveAll(roomInOrdersList);
-        return save.getId();
+        return savedOrders.getId();
     }
 
 
     public Basket getActivateBasket(Member member) {
 
         List<Basket> nowBasket = basketRepository.findByMember(member);
-        Basket basket = switch (nowBasket.size()) {
+        return switch (nowBasket.size()) {
             case 1 -> nowBasket.get(0);
             case 0 -> basketRepository.save(new Basket(member));
-            default -> throw new BasketDuplicateActivateException();
+            default -> deleteBasket(nowBasket,member);
         };
-        return basket;
+    }
+
+    public Basket deleteBasket(List<Basket> basketList,Member member){
+        List<RoomInBasket> roomInBasketList = new ArrayList<>();
+        for (Basket basket : basketList) {
+            List<RoomInBasket> byBasket = roomInBasketRepository.findByBasket(basket);
+            roomInBasketList.addAll(byBasket);
+        }
+
+        Basket savedBasket = basketRepository.save(new Basket(member));
+
+        for (RoomInBasket roomInBasket : roomInBasketList) {
+            roomInBasket.changeBasket(savedBasket);
+        }
+        basketRepository.deleteAllInBatch(basketList);
+
+        return savedBasket;
     }
 }
