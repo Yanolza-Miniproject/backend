@@ -1,24 +1,16 @@
 package com.miniproject.domain.accommodation.controller;
 
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;
-import com.miniproject.domain.accommodation.repository.AccommodationRepositoryCustom;
-import com.miniproject.domain.accommodation.repository.AccommodationRepositoryImpl;
+import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.accommodation.service.AccommodationService;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.member.exception.DuplicateEmailException;
-import com.miniproject.domain.member.service.MemberService;
-import com.miniproject.domain.orders.dto.response.OrdersResponseDto;
-import com.miniproject.domain.orders.service.OrdersService;
-import com.miniproject.domain.payment.service.PaymentService;
-import com.miniproject.domain.room.dto.response.RoomInOrdersGetResponseDto;
-import com.miniproject.domain.room.entity.Room;
 import com.miniproject.global.config.CustomHttpHeaders;
 import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.jwt.service.JwtService;
-import com.miniproject.global.resolver.LoginInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,32 +18,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import org.springframework.data.domain.Page;
 import java.time.LocalTime;
+import java.util.Date;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -145,7 +127,9 @@ class AccommodationControllerTest {
 
         Page<AccommodationSimpleResponse> accommodations = new PageImpl<>(responseList);
 
-        when(accommodationService.getAccommodations(any(Pageable.class), any(), any(), any(), any(), any(), any(), any())).thenReturn(accommodations);
+        AccommodationRequest request = new AccommodationRequest(null, null, null, null, null, null);
+
+        when(accommodationService.getAccommodations(any(Pageable.class), eq(request), any())).thenReturn(accommodations);
 
         mockMvc.perform(get("/api/v1/accommodations")
                         .headers(testAuthHeaders))

@@ -1,5 +1,6 @@
 package com.miniproject.domain.accommodation.repository;
 
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.entity.QAccommodation;
@@ -17,34 +18,30 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
 
     @Override
     public Page<Accommodation> findByCategory(Pageable pageable,
-                                              Integer categoryParking,
-                                              Integer categoryCooking,
-                                              Integer categoryPickup,
-                                              Integer type,
-                                              Integer wishCount,
-                                              String region01) {
+                                              AccommodationRequest request,
+                                              String region) {
 
         QAccommodation accommodation = QAccommodation.accommodation;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        if (categoryParking != null && categoryParking == 1) {
+        if (request.categoryParking() != null && request.categoryParking() == 1) {
             booleanBuilder.and(accommodation.categoryParking.isTrue());
         }
-        if (categoryCooking != null && categoryCooking == 1) {
+        if (request.categoryCooking() != null && request.categoryCooking() == 1) {
             booleanBuilder.and(accommodation.categoryCooking.isTrue());
         }
-        if (categoryPickup != null && categoryPickup == 1) {
+        if (request.categoryPickup() != null && request.categoryPickup() == 1) {
             booleanBuilder.and(accommodation.categoryPickup.isTrue());
         }
-        if (type != null) {
-            AccommodationType accommodationType = AccommodationType.fromIndex(type);
+        if (request.type() != null) {
+            AccommodationType accommodationType = AccommodationType.fromIndex(request.type());
             booleanBuilder.and(accommodation.type.eq(accommodationType));
         }
-        if (wishCount != null && wishCount >= 0) {
-            booleanBuilder.and(accommodation.wishCount.goe(wishCount));
+        if (request.wishCount() != null && request.wishCount() >= 0) {
+            booleanBuilder.and(accommodation.wishCount.goe(request.wishCount()));
         }
-        if (region01 != null && !region01.isEmpty()) {
-            booleanBuilder.and(accommodation.address.contains(region01));
+        if (region != null && !region.isEmpty()) {
+            booleanBuilder.and(accommodation.address.contains(region));
         }
 
         QueryResults<Accommodation> result = from(accommodation)

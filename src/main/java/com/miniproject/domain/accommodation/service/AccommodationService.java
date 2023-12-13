@@ -1,10 +1,10 @@
 package com.miniproject.domain.accommodation.service;
 
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationRegionType;
-import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.room.entity.Room;
@@ -57,22 +57,17 @@ public class AccommodationService {
     // 동적 쿼리가 필요한 기능이므로 querydsl 사용이 추천됨
     @Transactional
     public Page<AccommodationSimpleResponse> getAccommodations(Pageable pageable,
-                                                               Integer categoryParking,
-                                                               Integer categoryCooking,
-                                                               Integer categoryPickup,
-                                                               Integer type,
-                                                               Integer wishCount,
-                                                               Integer region01,
+                                                               AccommodationRequest request,
                                                                LoginInfo loginInfo) {
 
         String region = null;
 
-        if (region01 != null) {
-            region = AccommodationRegionType.findByValue(region01).getDescription();
+        if (request.region() != null) {
+            region = AccommodationRegionType.findByValue(request.region()).getDescription();
         }
 
         Page<Accommodation> result = accommodationRepository
-                .findByCategory(pageable, categoryParking, categoryCooking, categoryPickup, type, wishCount, region);
+                .findByCategory(pageable, request, region);
 
         List<Long> likedAccommodationIds;
 
