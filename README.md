@@ -166,8 +166,10 @@
 - **이민균**: 개인의 코드 개발 실력이 부족해서 코드 생산 시간 및 퀄리티가 전체적인 계획에 따라가기 버거웠다. 부족한 부분을 좀 더 공부를 하고 기본에 충실한 코드 작성 연습을 해야겠다고 느꼈다.
 프론트와 함께하는 경험은 어디가서도 쉽게 접할 수 없는 좋은 기회임을 느꼈다. 백엔드 개발자로서의 역할은 코드 개발도 중요하지만 자신의 생각을 타인에게 원활하고 쉽게 잘 풀어서 전달할 수 있는 능력이 필요하다고 느꼈다. 
 - **김동민**: 프론트와 처음 협업한 프로젝트라서 걱정이 많았지만, 팀원들과 모르는 점을 함께 논의하며 잘 해결할 수 있었던 것 같습니다. 좋은 경험이 되었습니다!
+  
+---
 
-
+<h1>프로젝트 보완 내용</h1>
 <h2>에러 해결 방법</h2>
 <details>
 <summary>박준모</summary>
@@ -302,7 +304,6 @@ cascade 옵션 값을 `CascadeType.PERSIST`라고 하면 부모 엔티티가 영
 </details>
 
 
-------------------------
 <h2>개인 역량회고</h2>
 <details>
 <summary>박준모</summary>
@@ -338,8 +339,6 @@ cascade 옵션 값을 `CascadeType.PERSIST`라고 하면 부모 엔티티가 영
 
 </details>
 
-
-------------------------
 <h2>보완 기능</h2>
 <details>
 <summary>박준모</summary>
@@ -483,10 +482,69 @@ steps:
 <details>
 <summary>이민균</summary>
 
+RefreshToken을 통해 AccessToken을 재발급 받을 때, RDB에 기간이 만료된 RefreshToken을 제거하는 기능 추가
+
+![Untitled 3](https://github.com/Yanolza-Miniproject/backend/assets/85631282/3dfffa60-14b5-4e2f-a7d1-ab5c5eac0162)
+
+```java
+/* JwtService */
+public class JwtService {
+
+public void deleteExpiredTokens() {
+        refreshTokenRepository.deleteRefreshTokensByExpiryDateBefore(LocalDateTime.now());
+    }
+}
+
+/* RefreshTokenRepository  */
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+
+    void deleteRefreshTokensByExpiryDateBefore(LocalDateTime expiryDate_date);
+}
+```
+
+- 이번 미니프로젝트에서는 Refresh 토큰을 RDB에 저장하여 관리하였다. 보통 Refresh 토큰을 저장할 때 Redis에 저장한다. 각 방법의 특징은 아래와 같다.
+    
+    
+    - Redis :
+        - 메모리 기반의 데이터 저장소이기에 RDB 보다 빠른 응답 속도를 제공
+        - 만료 시간을 설정할 수 있어 토큰 유효 기간 관리가 용이함
+        - Key-Value 형태를 가지므로 토큰 관리에 적합함
+    - RDB :
+        - 데이터 영속성이 보장됨
+        - 복잡한 쿼리를 지원함, 다양한 정보를 관리하고 다룰 수 있음
+        - 데이터 무결성 보장, 응답속도 느림, 만료 시간을 직접 관리해야함
+
+ 
+
+위 특징을 보면 Refresh 토큰은 다른 도메인과 비교했을 때, 중요한 정보가 아니므로 영속성이 필요하지 않다. 그렇기에 휘발성인 Redis에 저장하는 것이 좋을 수 있다. 
+
+반대로 RDB에서 RefreshToken을 관리하면 토큰을 관리하고 분석할 수 있다. 언제 어떤 사용자에게 발급되고 사용되었는지, 사용자의 패턴을 분석하여 비정상적인 토큰 사용을 감지할 수 있을 것 같다. 
+
+RDB에서는 만료 시간을 직접 관리해야 하기에 위와 같은 기능을 추가했다. 현재는 AccessToken을 재발급 받을 때 동작하고 있지만, 추가적으로 더 나아간다면 Spring Batch Job을 통해 주기적으로 관리할 수 있을 것 같다.
 
 </details>
 <details>
 <summary>김동민</summary>
 
+    
+### 좋아요 기능에서 중복되는 코드를 별도의 메소드로 분리하기
+    
+- *이전 코드*
+        
+좋아요 기능에 대한 서비스 계층에서 해당 좋아요가 이미 DB에 저장되어 있는지, 멤버 데이터가 존재하는지 등 검증하는 기능에 대해 중복되는 코드들이 존재했다.
+
+![1](https://github.com/Yanolza-Miniproject/backend/assets/85631282/b8639c7e-d87a-4681-8a08-4ddc59038e5c)
+
+![2](https://github.com/Yanolza-Miniproject/backend/assets/85631282/648c6b17-279b-414d-aadd-9f3b5235360e)
+
+
+        
+해당 기능들을 하나의 메소드로 통합시켜서 해당 메소드를 호출함으로서 기능을 사용할 수 있도록 리팩토링 했다.
+        
+- *리팩토링 이후*
+        
+![3](https://github.com/Yanolza-Miniproject/backend/assets/85631282/0b1a894f-a10e-4bfb-9837-4d99d2849c20)
+
+![4](https://github.com/Yanolza-Miniproject/backend/assets/85631282/bf5ef4c9-f345-432b-a912-cba748a35c62)
 
 </details>
