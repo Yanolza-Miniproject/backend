@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "email")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
