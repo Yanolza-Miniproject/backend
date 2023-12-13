@@ -2,6 +2,7 @@ package com.miniproject.domain.accommodation.dto.response;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
 

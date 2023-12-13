@@ -4,7 +4,6 @@ import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.exception.AccommodationNotFoundException;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
 import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.member.repository.MemberRepository;
 import com.miniproject.domain.member.exception.MemberNotFoundException;
 import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.wish.entity.Wish;
@@ -31,14 +30,10 @@ public class WishService {
     private final MemberService memberService;
 
     public Long saveWish(Long accommodationId, LoginInfo loginInfo) {
-        Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow(AccommodationNotFoundException::new);
-
+        Accommodation accommodation = findAccommodationById(accommodationId);
         Member member = memberService.getMemberByLoginInfo(loginInfo);
 
-        if (isAlreadyWish(accommodation, member)) {
-            throw new AlreadyWishException();
-        }
+        validateWishNotExist(accommodation, member);
 
         Wish wish = Wish.builder()
                 .accommodation(accommodation)
@@ -49,14 +44,23 @@ public class WishService {
         return saved.getId();
     }
 
-    private boolean isAlreadyWish(Accommodation accommodation, Member member) {
+    private Accommodation findAccommodationById(Long accommodationId) {
+        return accommodationRepository.findById(accommodationId)
+                .orElseThrow(AccommodationNotFoundException::new);
+    }
+
+    private void validateWishNotExist(Accommodation accommodation, Member member) {
+        if (isWishExist(accommodation, member)) {
+            throw new AlreadyWishException();
+        }
+    }
+
+    private boolean isWishExist(Accommodation accommodation, Member member) {
         return wishRepository.findByMemberAndAccommodation(member, accommodation).isPresent();
     }
 
     public void deleteWish(Long accommodationId, LoginInfo loginInfo) {
-        Accommodation accommodation = accommodationRepository.findById(accommodationId)
-                .orElseThrow(AccommodationNotFoundException::new);
-
+        Accommodation accommodation = findAccommodationById(accommodationId);
         Member member = memberService.getMemberByLoginInfo(loginInfo);
 
         Wish wish = wishRepository.findByMemberAndAccommodation(member, accommodation)
@@ -67,11 +71,8 @@ public class WishService {
     }
 
     public List<Long> getWishesOnlyAccommodationId(LoginInfo loginInfo) {
-
         Member member = memberService.getMemberByLoginInfo(loginInfo);
-
-        List<Wish> wishes = wishRepository.findAllByMember(member)
-                .orElseThrow(MemberNotFoundException::new);
+        List<Wish> wishes = findWishesbyMember(member);
 
         return wishes.stream()
                 .map(Wish::getAccommodation)
@@ -79,12 +80,17 @@ public class WishService {
                 .collect(Collectors.toList());
     }
 
+    private List<Wish> findWishesbyMember(Member member) {
+        List<Wish> wishes = wishRepository.findAllByMember(member);
+        if (wishes.isEmpty()) {
+            throw new WishNotFoundException();
+        }
+        return wishes;
+    }
+
     public List<AccommodationWishResDto> getWishes(LoginInfo loginInfo) {
-
         Member member = memberService.getMemberByLoginInfo(loginInfo);
-
-        List<Wish> wishes = wishRepository.findAllByMember(member)
-                .orElseThrow(MemberNotFoundException::new);
+        List<Wish> wishes = findWishesbyMember(member);
 
         return wishes.stream()
                 .map(AccommodationWishResDto::fromEntity)

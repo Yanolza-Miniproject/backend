@@ -17,7 +17,6 @@ import com.miniproject.domain.room.repository.RoomInventoryRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,26 +34,44 @@ public class PaymentService {
     private final RoomInventoryRepository roomInventoryRepository;
 
     public PaymentResponseDto getPayment(Long paymentId,Member member) {
-        Payment payment = getPaymentForException(paymentId, member);
-        return new PaymentResponseDto(payment);
+        return new PaymentResponseDto(checkGetPayment(paymentId, member));
     }
 
     public List<PaymentResponseDto> getPayments(Integer page, Integer pageSize, Member member) {
         Page<Payment> allByMemberContaining = paymentRepository.findAllByMember(
             PageRequest.of(page - 1, pageSize), member);
         return allByMemberContaining.stream()
-            .map(payment -> new PaymentResponseDto(payment))
-            .collect(Collectors.toList());
+            .map(PaymentResponseDto::new)
+            .toList();
     }
 
     public void completePayment(Long paymentId, Member member){
-        Payment payment = getPaymentForException(paymentId, member);
+        Payment payment = checkGetPayment(paymentId, member);
         payment.completePayment();
 
-        List<RoomInBasket> roomInBaskets = new ArrayList<>();
+        extracted(payment);
 
-        List<Room> rooms = payment.getOrders().getRoomInOrders().stream().map(
-            roomInOrders -> roomInOrders.getRoom()).collect(Collectors.toList());
+        List<Room> rooms = payment.getOrders()
+            .getRoomInOrders()
+            .stream()
+            .map(RoomInOrders::getRoom)
+            .toList();
+
+        Basket activateBasket = basketService.getActivateBasket(member);
+        List<RoomInBasket> roomInBasketList = activateBasket.getRooms()
+            .stream()
+            .filter(roomInBasket -> rooms.contains(roomInBasket.getRoom()))
+            .toList();
+
+        activateBasket.deleteRoom(roomInBasketList);
+        roomInBasketRepository.deleteAllInBatch(roomInBasketList);
+    }
+
+    /**
+     *
+     * 리팩토링 필요
+     */
+    private void extracted(Payment payment) {
         List<RoomInOrders> roomInOrders = payment.getOrders().getRoomInOrders();
         for (RoomInOrders roomInOrder : roomInOrders) {
             LocalDate checkInAt = roomInOrder.getCheckInAt();
@@ -67,8 +84,6 @@ public class PaymentService {
                             .filter(inven -> (inven.getDate().isAfter(checkInAt) && inven.getDate().isBefore(checkOutAt)) || inven.getDate().equals(checkInAt) )
                             .toList();
 
-            System.out.println(targetInventory1);
-
             List<RoomInventory> targetInventory2 = new ArrayList<>();
             for (RoomInventory inven : targetInventory1) {
                 inven.minusInventory();
@@ -77,23 +92,12 @@ public class PaymentService {
 
             roomInventoryRepository.saveAll(targetInventory2);
         }
-
-        Basket activateBasket = basketService.getActivateBasket(member);
-        List<RoomInBasket> roomInBasketList = activateBasket.getRooms();
-        for (RoomInBasket roomInBasket : roomInBasketList) {
-            if (rooms.contains(roomInBasket.getRoom())) {
-                roomInBaskets.add(roomInBasket);
-            }
-        }
-        activateBasket.clearBasket();
-
-        roomInBasketRepository.deleteAll(roomInBaskets);
     }
 
-    public Payment getPaymentForException(Long paymentId, Member member) {
+    public Payment checkGetPayment(Long paymentId, Member member) {
         Payment payment = paymentRepository.findById(paymentId)
             .orElseThrow(PaymentNotFoundException::new);
-        if(!member.getEmail().equals(payment.getOrders().getMember().getEmail())){
+        if(!member.equals(payment.getMember())){
             throw new MemberUnAuthorizedException();
         }
         return payment;
