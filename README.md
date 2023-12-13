@@ -37,6 +37,7 @@
 - AWS EC2에 스프링 서버를 배포하였습니다.
 
 <h2>배포 링크 테스트 ID</h2>
+
 - 백엔드 배포 링크: http://43.200.54.142:8080/
 - 프론트엔드 배포 링크: https://heynolja-mini-4.vercel.app/
 - 테스트 ID: test1203@gmail.com , PW: test1203!
