@@ -185,7 +185,7 @@ public class RoomControllerTest {
         List<RoomSimpleResponse> responseList = List.of(roomSimpleResponse1, roomSimpleResponse2);
 
         // when
-        when(roomService.getRoomsByAccommodationId(anyLong(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(responseList);
+        when(roomService.getRoomsByAccommodationId(anyLong(), any(), any())).thenReturn(responseList);
 
         mockMvc.perform(get("/api/v1/accommodations/{accommodationId}/rooms?page=0&checkin-day=2023-11-30&checkout-day=2023-12-01", 1)
                         .headers(testAuthHeaders))
