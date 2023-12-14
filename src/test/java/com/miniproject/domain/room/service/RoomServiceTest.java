@@ -1,17 +1,11 @@
 package com.miniproject.domain.room.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.basket.entity.Basket;
 import com.miniproject.domain.basket.service.BasketService;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.orders.entity.Orders;
 import com.miniproject.domain.orders.repository.OrdersRepository;
-import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.room.dto.RoomImageDTO;
 import com.miniproject.domain.room.dto.RoomInventoryDTO;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
@@ -22,12 +16,6 @@ import com.miniproject.domain.room.entity.*;
 import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import com.miniproject.domain.room.repository.RoomInOrdersRepository;
 import com.miniproject.domain.room.repository.RoomRepository;
-import com.miniproject.domain.room.service.RoomService;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +27,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {

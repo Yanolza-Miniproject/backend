@@ -5,31 +5,18 @@ import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
 import com.miniproject.domain.room.dto.request.RoomRequest;
+import com.miniproject.domain.room.dto.response.RoomDetailResponse;
+import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.service.RoomService;
 import com.miniproject.global.resolver.LoginInfo;
 import com.miniproject.global.resolver.SecurityContext;
 import com.miniproject.global.util.ResponseDTO;
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.miniproject.domain.room.dto.response.RoomDetailResponse;
-import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
-import com.miniproject.domain.room.service.RoomService;
-import com.miniproject.global.util.ResponseDTO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
