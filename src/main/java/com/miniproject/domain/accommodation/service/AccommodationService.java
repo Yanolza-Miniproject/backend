@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,12 +44,9 @@ public class AccommodationService {
 
         boolean isWished = false;
 
-        if(loginInfo.username() != "anonymousUser") {
-            // 로그인 유저가 좋아요누른 숙소 ID 리스트를 받온다
-            List<Long> likedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
-            if (likedAccommodationIds.contains(accommodation.getId())) {
-                isWished = true;
-            }
+        if(!Objects.equals(loginInfo.username(), "anonymousUser")) {
+            List<Long> wishedAccommodationIds = wishService.getWishesOnlyAccommodationId(loginInfo);
+            isWished = wishedAccommodationIds.contains(accommodation.getId());
         }
 
         return AccommodationDetailResponse.formEntity(accommodation, cheapestRoomPrice, isWished);
