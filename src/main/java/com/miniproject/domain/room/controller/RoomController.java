@@ -4,6 +4,7 @@ package com.miniproject.domain.room.controller;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.service.RoomService;
 import com.miniproject.global.resolver.LoginInfo;
 import com.miniproject.global.resolver.SecurityContext;
@@ -69,31 +70,24 @@ public class RoomController {
     @GetMapping("accommodations/{accommodationId}/rooms")
     public ResponseEntity<ResponseDTO<List<RoomSimpleResponse>>> getRooms(
             @PathVariable Long accommodationId,
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(required = false, name = "category-tv") Integer categoryTv,
-            @RequestParam(required = false, name = "category-pc") Integer categoryPc,
-            @RequestParam(required = false, name = "category-internet") Integer categoryInternet,
-            @RequestParam(required = false, name = "category-refrigerator") Integer categoryRefrigerator,
-            @RequestParam(required = false, name = "category-bathing-facilities") Integer categoryBathingFacilities,
-            @RequestParam(required = false, name = "category-dryer") Integer categoryDryer,
-            @RequestParam(name = "checkin-day")LocalDate checkinDay,
-            @RequestParam(name = "checkout-day")LocalDate checkoutDay
+            Pageable pageable,
+            @ModelAttribute RoomRequest request
+//            @RequestParam(defaultValue = "0", name = "page") int page,
+//            @RequestParam(required = false, name = "category-tv") Integer categoryTv,
+//            @RequestParam(required = false, name = "category-pc") Integer categoryPc,
+//            @RequestParam(required = false, name = "category-internet") Integer categoryInternet,
+//            @RequestParam(required = false, name = "category-refrigerator") Integer categoryRefrigerator,
+//            @RequestParam(required = false, name = "category-bathing-facilities") Integer categoryBathingFacilities,
+//            @RequestParam(required = false, name = "category-dryer") Integer categoryDryer,
+//            @RequestParam(name = "checkin-day")LocalDate checkinDay,
+//            @RequestParam(name = "checkout-day")LocalDate checkoutDay
             ) {
-
-        Pageable pageable = PageRequest.of(page, 20);
 
         List<RoomSimpleResponse> roomSimpleResponseList =
                 roomService.getRoomsByAccommodationId(
                         accommodationId,
                         pageable,
-                        categoryTv,
-                        categoryPc,
-                        categoryInternet,
-                        categoryRefrigerator,
-                        categoryBathingFacilities,
-                        categoryDryer,
-                        checkinDay,
-                        checkoutDay);
+                        request);
 
         return ResponseEntity.ok(
                 ResponseDTO.res("성공", roomSimpleResponseList)

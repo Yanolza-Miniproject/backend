@@ -41,20 +41,10 @@ public class AccommodationController {
     // 주차, 조리, 픽업, 지역(일단 도, 특별시 기준)
     @GetMapping
     public ResponseEntity<ResponseDTO<List<AccommodationSimpleResponse>>> getAccommodations(
-//            @RequestParam(defaultValue = "0", name = "page") int page,
-//            @RequestParam(required = false, name = "category-parking") Integer categoryParking,
-//            @RequestParam(required = false, name = "category-cooking") Integer categoryCooking,
-//            @RequestParam(required = false, name = "category-pickup") Integer categoryPickup,
-//            @RequestParam(required = false, name = "type") Integer type,
-//            @RequestParam(required = false, name = "wish-count") Integer wishCount,
-//            @RequestParam(required = false, name = "region01") Integer region01,
             Pageable pageable,
             @ModelAttribute AccommodationRequest request,
             @SecurityContext LoginInfo loginInfo
     ) {
-
-//        Sort sort = Sort.by("name").ascending(); // 만약 페이지 네이션에 정렬이 필요한 경우
-//        Pageable pageable = PageRequest.of(page, 20);
 
         Page<AccommodationSimpleResponse> accommodationPage =
                 accommodationService.getAccommodations(

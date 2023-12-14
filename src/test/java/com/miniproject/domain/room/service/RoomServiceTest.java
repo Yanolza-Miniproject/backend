@@ -3,6 +3,7 @@ package com.miniproject.domain.room.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.basket.entity.Basket;
@@ -14,6 +15,7 @@ import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.room.dto.RoomImageDTO;
 import com.miniproject.domain.room.dto.RoomInventoryDTO;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.dto.response.RoomDetailResponse;
 import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.entity.*;
@@ -154,6 +156,9 @@ public class RoomServiceTest {
                 .name("숙소01")
                 .build();
 
+//        Accommodation accommodation = mock(Accommodation.class);
+//        given(accommodation.getId()).willReturn(1L);
+
         List<RoomImage> roomImageList = List.of(RoomImage.builder().id(1L).build());
         List<RoomInventory> roomInventoryList = List.of(RoomInventory.builder().id(1L).build());
 
@@ -253,13 +258,16 @@ public class RoomServiceTest {
         List<RoomSimpleResponse> responseList = List.of(roomSimpleResponse);
 
         PageRequest pageRequest = PageRequest.of(0, 20);
+
         Page<Room> roomPage =
                 new PageImpl<>(rooms.subList(0, 1), pageRequest, rooms.size());
 
-        given(roomRepository.findByAccommodationIdAndCategory(anyLong(), any(), any(), any(), any(), any(), any(), any())).willReturn(roomPage);
+        RoomRequest request = new RoomRequest(0, 0, 0, 0, 0, 0, LocalDate.now(), LocalDate.now());
+
+        given(roomRepository.findByAccommodationIdAndCategory(anyLong(), any(), eq(request))).willReturn(roomPage);
 
         // when
-        List<RoomSimpleResponse> result = roomService.getRoomsByAccommodationId(accommodation.getId(), Pageable.ofSize(20), 0, 0, 0, 0, 0, 0, LocalDate.now(), LocalDate.now());
+        List<RoomSimpleResponse> result = roomService.getRoomsByAccommodationId(accommodation.getId(), Pageable.ofSize(20), request);
 
 
         // then

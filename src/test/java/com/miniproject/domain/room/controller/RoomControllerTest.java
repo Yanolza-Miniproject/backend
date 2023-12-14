@@ -1,7 +1,6 @@
 package com.miniproject.domain.room.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -15,6 +14,7 @@ import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.service.MemberService;
 import com.miniproject.domain.room.controller.RoomController;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.dto.response.RoomDetailResponse;
 import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.entity.Room;
@@ -185,7 +185,9 @@ public class RoomControllerTest {
         List<RoomSimpleResponse> responseList = List.of(roomSimpleResponse1, roomSimpleResponse2);
 
         // when
-        when(roomService.getRoomsByAccommodationId(anyLong(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(responseList);
+        RoomRequest request = new RoomRequest(null, null, null, null, null, null, null, null);
+
+        when(roomService.getRoomsByAccommodationId(anyLong(), any(), eq(request))).thenReturn(responseList);
 
         mockMvc.perform(get("/api/v1/accommodations/{accommodationId}/rooms?page=0&checkin-day=2023-11-30&checkout-day=2023-12-01", 1)
                         .headers(testAuthHeaders))
