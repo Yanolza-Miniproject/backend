@@ -1,20 +1,10 @@
 package com.miniproject.domain.room.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.member.service.MemberService;
-import com.miniproject.domain.room.controller.RoomController;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.dto.response.RoomDetailResponse;
 import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.entity.Room;
@@ -23,24 +13,31 @@ import com.miniproject.domain.room.service.RoomService;
 import com.miniproject.global.config.CustomHttpHeaders;
 import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.jwt.service.JwtService;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@WebMvcTest(RoomController.class)
 @SpringBootTest
@@ -185,7 +182,9 @@ public class RoomControllerTest {
         List<RoomSimpleResponse> responseList = List.of(roomSimpleResponse1, roomSimpleResponse2);
 
         // when
-        when(roomService.getRoomsByAccommodationId(anyLong(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(responseList);
+        RoomRequest request = new RoomRequest(null, null, null, null, null, null, null, null);
+
+        when(roomService.getRoomsByAccommodationId(anyLong(), any(), eq(request))).thenReturn(responseList);
 
         mockMvc.perform(get("/api/v1/accommodations/{accommodationId}/rooms?page=0&checkin-day=2023-11-30&checkout-day=2023-12-01", 1)
                         .headers(testAuthHeaders))

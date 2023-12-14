@@ -1,21 +1,15 @@
 package com.miniproject.domain.accommodation.service;
 
-import com.miniproject.domain.accommodation.dto.response.AccommodationDetailResponse;
-import com.miniproject.domain.accommodation.dto.response.AccommodationSimpleResponse;
+import com.miniproject.domain.accommodation.dto.request.AccommodationRequest;
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.accommodation.entity.AccommodationType;
 import com.miniproject.domain.accommodation.repository.AccommodationRepository;
-import com.miniproject.domain.member.entity.Member;
-import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.room.entity.Room;
 import com.miniproject.domain.room.entity.RoomImage;
 import com.miniproject.domain.room.entity.RoomInventory;
 import com.miniproject.domain.wish.service.WishService;
-import com.miniproject.global.config.CustomHttpHeaders;
-import com.miniproject.global.jwt.JwtPayload;
 import com.miniproject.global.resolver.LoginInfo;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,17 +20,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,12 +83,14 @@ class AccommodationServiceTest {
         Page<Accommodation> accommodationPage =
                 new PageImpl<>(accommodations.subList(0, 2), pageRequest, accommodations.size());
 
-        given(accommodationRepository.findByCategory(any(Pageable.class), any(), any(), any(), any(), any(), any())).willReturn(accommodationPage);
+        AccommodationRequest request = new AccommodationRequest(null, null, null, null, null, null);
+
+        given(accommodationRepository.findByCategory(any(Pageable.class), eq(request), any())).willReturn(accommodationPage);
+
         LoginInfo loginInfo = new LoginInfo("anonymousUser");
         Pageable pageable = PageRequest.of(0, 20);
 
-        var responses =  accommodationService.getAccommodations(pageable, null, null,
-                null, null, null, null, loginInfo).getContent();
+        var responses =  accommodationService.getAccommodations(pageable, request, loginInfo).getContent();
 
         //then
         Assertions.assertThat(responses.get(0)).extracting("id", "name")

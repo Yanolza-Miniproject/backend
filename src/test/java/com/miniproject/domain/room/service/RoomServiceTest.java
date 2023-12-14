@@ -1,31 +1,21 @@
 package com.miniproject.domain.room.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-
 import com.miniproject.domain.accommodation.entity.Accommodation;
 import com.miniproject.domain.basket.entity.Basket;
 import com.miniproject.domain.basket.service.BasketService;
 import com.miniproject.domain.member.entity.Member;
 import com.miniproject.domain.orders.entity.Orders;
 import com.miniproject.domain.orders.repository.OrdersRepository;
-import com.miniproject.domain.payment.entity.Payment;
 import com.miniproject.domain.room.dto.RoomImageDTO;
 import com.miniproject.domain.room.dto.RoomInventoryDTO;
 import com.miniproject.domain.room.dto.request.RoomRegisterRequestDto;
+import com.miniproject.domain.room.dto.request.RoomRequest;
 import com.miniproject.domain.room.dto.response.RoomDetailResponse;
 import com.miniproject.domain.room.dto.response.RoomSimpleResponse;
 import com.miniproject.domain.room.entity.*;
 import com.miniproject.domain.room.repository.RoomInBasketRepository;
 import com.miniproject.domain.room.repository.RoomInOrdersRepository;
 import com.miniproject.domain.room.repository.RoomRepository;
-import com.miniproject.domain.room.service.RoomService;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +27,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {
@@ -154,6 +153,9 @@ public class RoomServiceTest {
                 .name("숙소01")
                 .build();
 
+//        Accommodation accommodation = mock(Accommodation.class);
+//        given(accommodation.getId()).willReturn(1L);
+
         List<RoomImage> roomImageList = List.of(RoomImage.builder().id(1L).build());
         List<RoomInventory> roomInventoryList = List.of(RoomInventory.builder().id(1L).build());
 
@@ -253,13 +255,16 @@ public class RoomServiceTest {
         List<RoomSimpleResponse> responseList = List.of(roomSimpleResponse);
 
         PageRequest pageRequest = PageRequest.of(0, 20);
+
         Page<Room> roomPage =
                 new PageImpl<>(rooms.subList(0, 1), pageRequest, rooms.size());
 
-        given(roomRepository.findByAccommodationIdAndCategory(anyLong(), any(), any(), any(), any(), any(), any(), any())).willReturn(roomPage);
+        RoomRequest request = new RoomRequest(0, 0, 0, 0, 0, 0, LocalDate.now(), LocalDate.now());
+
+        given(roomRepository.findByAccommodationIdAndCategory(anyLong(), any(), eq(request))).willReturn(roomPage);
 
         // when
-        List<RoomSimpleResponse> result = roomService.getRoomsByAccommodationId(accommodation.getId(), Pageable.ofSize(20), 0, 0, 0, 0, 0, 0, LocalDate.now(), LocalDate.now());
+        List<RoomSimpleResponse> result = roomService.getRoomsByAccommodationId(accommodation.getId(), Pageable.ofSize(20), request);
 
 
         // then

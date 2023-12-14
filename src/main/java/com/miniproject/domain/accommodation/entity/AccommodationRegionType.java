@@ -2,6 +2,8 @@ package com.miniproject.domain.accommodation.entity;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public enum AccommodationRegionType {
 
@@ -22,11 +24,9 @@ public enum AccommodationRegionType {
     }
 
     public static AccommodationRegionType findByValue(int value) {
-        for (AccommodationRegionType accommodationRegionType : AccommodationRegionType.values()) {
-            if (accommodationRegionType.getValue() == value) {
-                return accommodationRegionType;
-            }
-        }
-        return null;
+        return Arrays.stream(AccommodationRegionType.values())
+                .filter(accommodationRegionType -> accommodationRegionType.getValue() == value)
+                .findFirst()
+                .orElse(null);
     }
 }
